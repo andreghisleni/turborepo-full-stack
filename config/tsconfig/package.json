@@ -1,0 +1,14 @@
+{
+  "name": "@full-stack/tsconfig",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "nextjs.json",
+    "lib.json",
+    "nest.json",
+    "node.json",
+    "nest2.json"
+  ]
+}

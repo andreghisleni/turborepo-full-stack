@@ -1,0 +1,33 @@
+{
+  "name": "@full-stack/authorization",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsup src/index.ts --dts --watch",
+    "build": "tsup src/index.ts --dts --minify",
+    "format": "prettier --write \"src/**/*.ts\" ",
+    "lint": "eslint \"{src,apps,libs}/**/*.ts\" --fix"
+  },
+  "devDependencies": {
+    "@full-stack/eslint-config": "workspace:*",
+    "@full-stack/prettier": "workspace:*",
+    "@full-stack/tsconfig": "workspace:*",
+    "tsup": "^8.0.2",
+    "typescript": "^5"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@full-stack/eslint-config/nest"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    }
+  },
+  "prettier": "@full-stack/prettier",
+  "dependencies": {
+    "@casl/ability": "^6.7.1",
+    "zod": "^3.22.4"
+  }
+}

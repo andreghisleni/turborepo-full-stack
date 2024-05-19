@@ -1,0 +1,6 @@
+{
+  "extends": "@full-stack/tsconfig/library.json",
+  "include": [
+    "index.ts"
+  ]
+}
