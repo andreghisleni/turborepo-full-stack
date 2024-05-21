@@ -5,5 +5,6 @@ module.exports = {
   rules: {
     // 'simple-import-sort/imports': 'error',
     camelcase: 'off',
+    "t@typescript-eslint/no-unsafe-call": "off",
   },
 }

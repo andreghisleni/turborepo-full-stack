@@ -10,7 +10,8 @@ const config = {
   singleQuote: true,
   trailingComma: 'all',
   arrowParens: 'avoid',
-  useTabs: false
+  useTabs: false,
+  bracketSpacing: true,
 }
 
 export default config

@@ -10,7 +10,7 @@
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
@@ -18,8 +18,9 @@
     "lib": ["es2023"],
     "module": "node16",
     "target": "es2022",
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
-    "moduleResolution": "node16"
+    "moduleResolution": "node16",
+    "strictPropertyInitialization": false
   }
 }

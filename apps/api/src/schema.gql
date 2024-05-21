@@ -1,0 +1,91 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthType {
+  refreshToken: String!
+  session: Session!
+  token: String!
+}
+
+""""""
+input CreateAuthInput {
+  """The email of the user"""
+  email: String!
+
+  """The password of the user"""
+  password: String!
+}
+
+""""""
+input CreateUserInput {
+  """The email of the user"""
+  email: String!
+
+  """The name of the user"""
+  name: String!
+
+  """The password of the user"""
+  password: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  activateUser(id: String!): User!
+  blockUser(id: String!): User!
+  createSession(data: CreateAuthInput!): AuthType!
+  createUser(
+    """Create a new inventory_item"""
+    input: CreateUserInput!
+  ): User!
+  refreshSession(refreshToken: String!): AuthType!
+  updateAvatar(avatar: String!): User!
+  updateProfile(
+    """Create a new inventory_item"""
+    input: UpdateUserInput!
+  ): User!
+}
+
+type Query {
+  getTotalUsers: Float!
+  profile: User!
+  session: Session!
+  user(id: String!): User!
+  users: [User!]!
+}
+
+type Session {
+  createdAt: DateTime!
+  id: String!
+  organization: String!
+  updatedAt: DateTime!
+  user: User!
+}
+
+""""""
+input UpdateUserInput {
+  """The name of the user"""
+  name: String
+}
+
+type User {
+  activatedAt: DateTime
+  avatarUrl: String
+  blockedAt: DateTime
+  createdAt: DateTime!
+  email: String!
+  id: String!
+  invites: String!
+  ips: String!
+  member_on: String!
+  name: String!
+  owns_organizations: String!
+  passwordUpdatedAt: DateTime!
+  sessions: [Session!]!
+  tokens: String!
+  updatedAt: DateTime!
+}

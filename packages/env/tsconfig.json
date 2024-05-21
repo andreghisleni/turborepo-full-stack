@@ -1,5 +1,5 @@
 {
-  "extends": "@full-stack/tsconfig/library.json",
+  "extends": "@full-stack/tsconfig/lib.json",
   "include": [
     "index.ts"
   ]

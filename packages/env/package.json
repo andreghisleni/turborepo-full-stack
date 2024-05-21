@@ -12,8 +12,11 @@
   },
   "eslintConfig": {
     "extends": [
-      "@full-stack/eslint-config/library"
-    ]
+      "@full-stack/eslint-config/lib"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    }
   },
   "prettier": "@full-stack/prettier",
   "dependencies": {

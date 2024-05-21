@@ -14,7 +14,7 @@
     ],
     "assets": [
       {
-        "include": "mail/templates/*.hbs",
+        "include": "shared/mail/templates/*.hbs",
         "watchAssets": true
       }
     ]
