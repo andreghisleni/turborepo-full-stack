@@ -19,6 +19,8 @@ model User {
 
   passwordHash String @map("password_hash")
 
+  role UserRoles @default(DEFAULT)
+
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
   passwordUpdatedAt DateTime @default(now()) @map("password_updated_at")
@@ -35,6 +37,11 @@ model User {
   sessions           Session[]
 
   @@map("users")
+}
+
+enum UserRoles {
+  ADMIN
+  DEFAULT
 }
 
 enum TokenType {
@@ -99,6 +106,8 @@ model Member {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
 
+  sessions Session[]
+
   @@unique([organizationId, userId])
   @@map("members")
 }
@@ -119,19 +128,17 @@ model Organization {
   invites Invite[]
   members Member[]
 
-  sessions Session[]
-
   @@map("organizations")
 }
 
 model Session {
   id String @id @default(uuid())
 
-  userId String
+  userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id])
 
-  organizationId String?
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  memberId String? @map("member_id")
+  member   Member? @relation(fields: [memberId], references: [id])
 
   // lastUpdatedToken DateTime? @map("last_updated_token")
 

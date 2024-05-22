@@ -8,6 +8,7 @@ import { join } from 'node:path';
 
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './shared/auth/auth.module';
+import { CaslModule } from './shared/casl/casl.module';
 import { CloudFlareModule } from './shared/cloud-flare-r2/cloud-flare-r2.module';
 import { PrismaModule } from './shared/database/prisma.module';
 import { EnvModule } from './shared/env/env.module';
@@ -64,6 +65,7 @@ import { MailModule } from './shared/mail/mail.module';
     MailModule,
     UsersModule,
     AuthModule,
+    CaslModule,
 
     // Other modules
 

@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const UpdateSessionSchema = z
   .object({
     id: z.string().uuid().describe('The session id'),
-    organizationId: z.string().uuid().optional().describe('The organization id'),
+    memberId: z.string().uuid().describe('The member id'),
   })
   .describe('UpdateSessionInput:');
 

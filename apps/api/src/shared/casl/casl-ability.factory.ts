@@ -1,14 +1,13 @@
-import { defineAbilityFor } from '@full-stack/authorization';
+import { organization, application } from '@full-stack/authorization';
 import { Injectable } from '@nestjs/common';
-
-export type User = {
-  id: string;
-  role: 'ADMIN' | 'MEMBER';
-};
 
 @Injectable()
 export class CaslAbilityFactory {
-  createForUser(user: User) {
-    return defineAbilityFor(user);
+  createForUserOrg(user: organization.User) {
+    return organization.defineAbilityFor(user);
+  }
+
+  createForUserApp(user: application.User) {
+    return application.defineAbilityFor(user);
   }
 }

@@ -41,7 +41,7 @@ export class SessionsService {
     return session;
   }
 
-  async update({ id, organizationId }: UpdateSessionInput) {
+  async update({ id, memberId }: UpdateSessionInput) {
     await this.findById(id);
 
     return this.prisma.session.update({
@@ -49,9 +49,9 @@ export class SessionsService {
         id,
       },
       data: {
-        organization: {
+        member: {
           connect: {
-            id: organizationId,
+            id: memberId,
           },
         },
       },
@@ -76,13 +76,13 @@ export class SessionsService {
       .user();
   }
 
-  async organization(id: string) {
+  async member(id: string) {
     return this.prisma.session
       .findUnique({
         where: {
           id,
         },
       })
-      .organization();
+      .member();
   }
 }

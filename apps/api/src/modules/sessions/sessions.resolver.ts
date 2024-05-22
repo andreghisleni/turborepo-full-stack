@@ -13,7 +13,7 @@ export class SessionsResolver {
   }
 
   @ResolveField()
-  organization(@Parent() { id }: Session) {
-    return this.sessionsService.organization(id);
+  member(@Parent() { id }: Session) {
+    return this.sessionsService.member(id);
   }
 }

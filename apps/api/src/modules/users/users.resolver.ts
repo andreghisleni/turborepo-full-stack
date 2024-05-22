@@ -1,5 +1,6 @@
 import { CurrentSession } from '@/shared/auth/auth.guard';
 import { Public } from '@/shared/auth/public.decorator';
+import { CheckPoliciesApp } from '@/shared/casl/policies.types';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ZodArgs } from 'nestjs-graphql-zod';
 
@@ -25,16 +26,19 @@ export class UsersResolver {
     return this.usersService.create(input);
   }
 
+  @CheckPoliciesApp(a => a.can('get', 'User'))
   @Query(() => [User], { name: 'users' })
   findAll() {
     return this.usersService.findAll();
   }
 
+  @CheckPoliciesApp(a => a.can('get', 'User'))
   @Query(() => User, { name: 'user' })
   findById(@Args('id', { type: () => String }) id: string) {
     return this.usersService.findById(id);
   }
 
+  @CheckPoliciesApp(a => a.can('update', 'User'))
   @Mutation(() => User)
   updateProfile(
     @ZodArgs(UpdateUserSchema, 'input', {
@@ -46,17 +50,19 @@ export class UsersResolver {
   ) {
     return this.usersService.update(user.id, input);
   }
-
+  @CheckPoliciesApp(a => a.can('update', 'User'))
   @Mutation(() => User)
   updateAvatar(@Args('avatar', { type: () => String }) avatar: string, @CurrentSession() { user }: Session) {
     return this.usersService.updateAvatar(user.id, avatar);
   }
 
+  @CheckPoliciesApp(a => a.can('activate', 'User'))
   @Mutation(() => User)
   activateUser(@Args('id', { type: () => String }) id: string) {
     return this.usersService.activate(id);
   }
 
+  @CheckPoliciesApp(a => a.can('block', 'User'))
   @Mutation(() => User)
   blockUser(@Args('id', { type: () => String }) id: string) {
     return this.usersService.block(id);
@@ -71,11 +77,13 @@ export class UsersResolver {
   //   return this.usersService.linkPermissionGroup(userId, permission_groupId);
   // }
 
+  @CheckPoliciesApp(a => a.can('get', 'User'))
   @Query(() => User)
   profile(@CurrentSession() { user }: Session) {
     return user;
   }
 
+  @CheckPoliciesApp(a => a.can('get', 'User'))
   @Query(() => Number)
   getTotalUsers() {
     return this.usersService.findTotalUsers();

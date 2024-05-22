@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const CreateSessionSchema = z
   .object({
     userId: z.string().uuid().describe('The user id'),
-    organizationId: z.string().uuid().optional().describe('The organization id'),
+    memberId: z.string().uuid().optional().describe('The member id'),
   })
   .describe('CreateSessionInput:');
 

@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "UserRoles" AS ENUM ('ADMIN', 'DEFAULT');
+
+-- CreateEnum
 CREATE TYPE "TokenType" AS ENUM ('PASSWORD_RECOVER');
 
 -- CreateEnum
@@ -11,6 +14,7 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "avatar_url" TEXT,
     "password_hash" TEXT NOT NULL,
+    "role" "UserRoles" NOT NULL DEFAULT 'DEFAULT',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "password_updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -81,8 +85,8 @@ CREATE TABLE "organizations" (
 -- CreateTable
 CREATE TABLE "sessions" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "organizationId" TEXT,
+    "user_id" TEXT NOT NULL,
+    "member_id" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -129,7 +133,7 @@ ALTER TABLE "members" ADD CONSTRAINT "members_user_id_fkey" FOREIGN KEY ("user_i
 ALTER TABLE "organizations" ADD CONSTRAINT "organizations_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sessions" ADD CONSTRAINT "sessions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sessions" ADD CONSTRAINT "sessions_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organizations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_member_id_fkey" FOREIGN KEY ("member_id") REFERENCES "members"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -61,7 +61,7 @@ type Query {
 type Session {
   createdAt: DateTime!
   id: String!
-  organization: String!
+  member: String!
   updatedAt: DateTime!
   user: User!
 }
@@ -85,6 +85,7 @@ type User {
   name: String!
   owns_organizations: String!
   passwordUpdatedAt: DateTime!
+  role: String!
   sessions: [Session!]!
   tokens: String!
   updatedAt: DateTime!

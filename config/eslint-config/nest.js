@@ -3,8 +3,9 @@ module.exports = {
   extends: ['@agsolutions/eslint-config/nest'],
   // plugins: ['simple-import-sort'],
   rules: {
+    'prettier/prettier': 'error',
     // 'simple-import-sort/imports': 'error',
     camelcase: 'off',
-    "t@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
   },
 }

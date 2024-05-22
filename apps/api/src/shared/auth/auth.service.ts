@@ -24,6 +24,10 @@ export class AuthService {
       throw new UnauthorizedException('User not activated');
     }
 
+    if (user.blockedAt) {
+      throw new UnauthorizedException('User blocked');
+    }
+
     const validatePassword = compareSync(data.password, user.passwordHash);
 
     if (!validatePassword) {

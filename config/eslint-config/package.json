@@ -10,10 +10,10 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "@agsolutions/eslint-config": "latest",
+    "@agsolutions/eslint-config": "^1.0.28",
+    "@full-stack/prettier": "workspace:*",
     "eslint-config-next": "^14.1.0",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    "@full-stack/prettier": "workspace:*"
+    "eslint-plugin-simple-import-sort": "^10.0.0"
   },
   "overrides": {
     "@typescript-eslint/eslint-plugin": "^6.21.0",

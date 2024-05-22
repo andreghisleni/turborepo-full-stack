@@ -7,7 +7,7 @@ export class Session {
 
   user: User;
 
-  organization: string; // TODO: Create organization entity
+  member: string; // TODO: Create Member entity
 
   createdAt: Date;
   updatedAt: Date;
