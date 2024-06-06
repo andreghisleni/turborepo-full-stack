@@ -1,8 +1,8 @@
 # O que falta fazer
 
-[ ] recuperação de senha
-  [ ] enviar email de recuperação
-  [ ] recuperar senha, rota publica, com token
+[x] recuperação de senha
+  [x] enviar email de recuperação
+  [x] recuperar senha, rota publica, com token
 
 [ ] organizações
   [ ] criação

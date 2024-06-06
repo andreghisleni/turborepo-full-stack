@@ -1,6 +1,7 @@
 export enum MailTemplate {
   NewUser = 'new-user.hbs',
   NewPropertyOwner = 'new-property-owner.hbs',
+  ForgotPassword = 'forgot-password.hbs',
 }
 
 export type MailTemplateData = {
@@ -13,6 +14,10 @@ export type MailTemplateData = {
       name: string;
       description: string;
     };
+  };
+  [MailTemplate.ForgotPassword]: {
+    name: string;
+    reset_url: string;
   };
 };
 

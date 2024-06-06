@@ -6,6 +6,8 @@ import { ZodArgs } from 'nestjs-graphql-zod';
 
 import { Session } from '../sessions/entities/session.entity';
 import { CreateUserInput, CreateUserSchema } from './dto/create-user.input';
+import { ResetPasswordInput, ResetPasswordSchema } from './dto/reset-password.input';
+import { UpdateRoleInput, UpdateRoleSchema } from './dto/update-role.input';
 import { UpdateUserInput, UpdateUserSchema } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
@@ -19,7 +21,7 @@ export class UsersResolver {
   async createUser(
     @ZodArgs(CreateUserSchema, 'input', {
       name: 'CreateUserInput',
-      description: 'Create a new inventory_item',
+      description: 'Create a new user',
     })
     input: CreateUserInput,
   ) {
@@ -43,7 +45,7 @@ export class UsersResolver {
   updateProfile(
     @ZodArgs(UpdateUserSchema, 'input', {
       name: 'CreateUserInput',
-      description: 'Create a new inventory_item',
+      description: 'Create a new user',
     })
     input: UpdateUserInput,
     @CurrentSession() { user }: Session,
@@ -87,5 +89,35 @@ export class UsersResolver {
   @Query(() => Number)
   getTotalUsers() {
     return this.usersService.findTotalUsers();
+  }
+
+  @Public()
+  @Mutation(() => Boolean)
+  async sendForgotPasswordEmail(@Args('email', { type: () => String }) email: string) {
+    return this.usersService.sendForgotPasswordEmail(email);
+  }
+
+  @Public()
+  @Mutation(() => Boolean)
+  async resetPassword(
+    @ZodArgs(ResetPasswordSchema, 'input', {
+      name: 'ResetPasswordInput',
+      description: 'Reset user password',
+    })
+    input: ResetPasswordInput,
+  ) {
+    return this.usersService.resetPassword(input);
+  }
+
+  @CheckPoliciesApp(a => a.can('update-role', 'User'))
+  @Mutation(() => User)
+  updateRole(
+    @ZodArgs(UpdateRoleSchema, 'input', {
+      name: 'UpdateRoleInput',
+      description: 'Update user role',
+    })
+    input: UpdateRoleInput,
+  ) {
+    return this.usersService.updateRole(input);
   }
 }

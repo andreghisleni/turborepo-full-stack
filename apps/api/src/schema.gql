@@ -39,14 +39,23 @@ type Mutation {
   blockUser(id: String!): User!
   createSession(data: CreateAuthInput!): AuthType!
   createUser(
-    """Create a new inventory_item"""
+    """Create a new user"""
     input: CreateUserInput!
   ): User!
   refreshSession(refreshToken: String!): AuthType!
+  resetPassword(
+    """Reset user password"""
+    input: ResetPasswordInput!
+  ): Boolean!
+  sendForgotPasswordEmail(email: String!): Boolean!
   updateAvatar(avatar: String!): User!
   updateProfile(
-    """Create a new inventory_item"""
+    """Create a new user"""
     input: UpdateUserInput!
+  ): User!
+  updateRole(
+    """Update user role"""
+    input: UpdateRoleInput!
   ): User!
 }
 
@@ -58,12 +67,24 @@ type Query {
   users: [User!]!
 }
 
+""""""
+input ResetPasswordInput {
+  password: String!
+  tokenId: String!
+}
+
 type Session {
   createdAt: DateTime!
   id: String!
   member: String!
   updatedAt: DateTime!
   user: User!
+}
+
+""""""
+input UpdateRoleInput {
+  role: String!
+  userId: String!
 }
 
 """"""

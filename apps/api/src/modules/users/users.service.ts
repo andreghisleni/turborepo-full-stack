@@ -1,4 +1,5 @@
 import { PrismaService } from '@/shared/database/prisma.service';
+import { EnvService } from '@/shared/env/env.service';
 import { MailTemplate } from '@/shared/mail/mail.interface';
 import { MailService } from '@/shared/mail/mail.service';
 import { Injectable } from '@nestjs/common';
@@ -6,11 +7,13 @@ import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 
 import { CreateUserInput } from './dto/create-user.input';
+import { ResetPasswordInput } from './dto/reset-password.input';
+import { UpdateRoleInput } from './dto/update-role.input';
 import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService, private readonly mailService: MailService) { } // eslint-disable-line
+  constructor(private prisma: PrismaService, private readonly mailService: MailService, private readonly env: EnvService) { } // eslint-disable-line
 
   async create({ password, ...createUserInput }: CreateUserInput) {
     const userExists = await this.prisma.user.findUnique({
@@ -160,6 +163,97 @@ export class UsersService {
       where: { id },
       data: {
         blockedAt: new Date(),
+      },
+    });
+  }
+
+  async sendForgotPasswordEmail(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new GraphQLError('User not found', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    if (!user.activatedAt) {
+      throw new GraphQLError('User is not activated', {
+        extensions: {
+          code: 401,
+        },
+      });
+    }
+
+    if (user.blockedAt) {
+      throw new GraphQLError('User is blocked', {
+        extensions: {
+          code: 401,
+        },
+      });
+    }
+
+    const token = await this.prisma.token.create({
+      data: {
+        userId: user.id,
+        type: 'PASSWORD_RECOVER',
+      },
+    });
+
+    await this.mailService.sendMail({
+      to: {
+        name: user.name,
+        email: user.email,
+      },
+      subject: 'Recuperação de senha',
+      template: {
+        name: MailTemplate.ForgotPassword,
+        data: {
+          name: user.name,
+          reset_url: `${this.env.get('WEB_URL')}/auth/reset-password/${token.id}`,
+        },
+      },
+    });
+
+    return true;
+  }
+
+  async resetPassword({ tokenId, password }: ResetPasswordInput) {
+    const token = await this.prisma.token.findUnique({
+      where: { id: tokenId },
+    });
+
+    if (!token) {
+      throw new GraphQLError('Token not found, or token already used', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await this.prisma.user.update({
+      where: { id: token.userId },
+      data: {
+        passwordHash: hashedPassword,
+      },
+    });
+
+    await this.prisma.token.delete({
+      where: { id: tokenId },
+    });
+    return true;
+  }
+
+  async updateRole({ userId, role }: UpdateRoleInput) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        role: role.toUpperCase() as 'ADMIN' | 'DEFAULT',
       },
     });
   }
