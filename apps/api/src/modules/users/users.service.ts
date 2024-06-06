@@ -257,4 +257,12 @@ export class UsersService {
       },
     });
   }
+
+  async owns_organizations(id: string) {
+    return this.prisma.user
+      .findUnique({
+        where: { id },
+      })
+      .owns_organizations();
+  }
 }

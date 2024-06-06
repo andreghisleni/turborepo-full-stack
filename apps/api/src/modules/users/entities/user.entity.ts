@@ -1,3 +1,4 @@
+import { Organization } from '@/modules/organizations/entities/organization.entity';
 import { Session } from '@/modules/sessions/entities/session.entity';
 import { ObjectType, HideField, Field } from '@nestjs/graphql';
 
@@ -28,7 +29,7 @@ export class User {
 
   invites: string; // TODO: Create invite entity
   member_on: string; // TODO: Create organization entity
-  owns_organizations: string; // TODO: Create organization entity
+  owns_organizations: Organization[];
 
   sessions: Session[];
 }

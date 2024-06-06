@@ -16,6 +16,11 @@ export const permissions: Record<Role, PermissionsByRole> = {
       id: { $eq: user.id },
     });
 
+    cannot(['transfer_ownership'], 'Organization');
+    can(['transfer_ownership'], 'Organization', {
+      ownerId: { $eq: user.id },
+    });
+
     cannot(['update-role'], 'User');
     can(['update-role'], 'User', {
       id: { $ne: user.id },

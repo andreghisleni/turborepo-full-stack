@@ -4,8 +4,7 @@ import { z } from 'zod';
 export const UpdateRoleSchema = z
   .object({
     userId: z.string(),
-    // role: z.union([z.literal('ADMIN'), z.literal('DEFAULT')]),
-    role: z.string(),
+    role: z.enum(['ADMIN', 'DEFAULT']),
   })
   .describe('UpdateRoleInput:');
 

@@ -18,6 +18,24 @@ input CreateAuthInput {
 }
 
 """"""
+input CreateOrganizationInput {
+  """The domain of the organization"""
+  domain: String
+
+  """The name of the organization"""
+  name: String!
+
+  """The owner of the organization"""
+  ownerId: String!
+
+  """Whether to attach users by domain"""
+  shouldAttachUsersByDomain: Boolean!
+
+  """The slug of the organization"""
+  slug: String!
+}
+
+""""""
 input CreateUserInput {
   """The email of the user"""
   email: String!
@@ -37,6 +55,10 @@ scalar DateTime
 type Mutation {
   activateUser(id: String!): User!
   blockUser(id: String!): User!
+  createOrganization(
+    """Create a new organization"""
+    input: CreateOrganizationInput!
+  ): Organization!
   createSession(data: CreateAuthInput!): AuthType!
   createUser(
     """Create a new user"""
@@ -50,17 +72,35 @@ type Mutation {
   sendForgotPasswordEmail(email: String!): Boolean!
   updateAvatar(avatar: String!): User!
   updateProfile(
-    """Create a new user"""
-    input: UpdateUserInput!
-  ): User!
+    """Create a new organization"""
+    input: UpdateOrganizationInput!
+  ): Organization!
   updateRole(
     """Update user role"""
     input: UpdateRoleInput!
   ): User!
 }
 
+type Organization {
+  avatarUrl: String
+  createdAt: DateTime!
+  domain: String
+  id: String!
+  invites: String!
+  members: String!
+  name: String!
+  owner: User!
+  shouldAttachUsersByDomain: Boolean!
+  slug: String!
+  updatedAt: DateTime!
+}
+
 type Query {
+  getTotalOrganizations: Float!
   getTotalUsers: Float!
+  organization(id: String!): Organization!
+  organizationBySlug(slug: String!): Organization!
+  organizations: [Organization!]!
   profile: User!
   session: Session!
   user(id: String!): User!
@@ -82,15 +122,24 @@ type Session {
 }
 
 """"""
-input UpdateRoleInput {
-  role: String!
-  userId: String!
+input UpdateOrganizationInput {
+  """The id of the organization"""
+  id: String!
+
+  """The name of the organization"""
+  name: String
 }
 
 """"""
-input UpdateUserInput {
-  """The name of the user"""
-  name: String
+input UpdateRoleInput {
+  role: UpdateRoleInput_RoleEnum_0!
+  userId: String!
+}
+
+"""Enum values for UpdateRoleInput.role"""
+enum UpdateRoleInput_RoleEnum_0 {
+  ADMIN
+  DEFAULT
 }
 
 type User {
@@ -104,7 +153,7 @@ type User {
   ips: String!
   member_on: String!
   name: String!
-  owns_organizations: String!
+  owns_organizations: [Organization!]!
   passwordUpdatedAt: DateTime!
   role: String!
   sessions: [Session!]!

@@ -3,12 +3,13 @@ import { z } from 'zod';
 
 import { User } from './models/user';
 import { permissions } from './permissions';
+import { organizationSubject } from './subjects/organization';
 import { userSubject } from './subjects/user';
 
 export * from './models/user';
 export * from './roles';
 
-const appAbilitiesSchema = z.union([userSubject, z.tuple([z.literal('manage'), z.literal('all')])]);
+const appAbilitiesSchema = z.union([userSubject, organizationSubject, z.tuple([z.literal('manage'), z.literal('all')])]);
 
 type AppAbilities = z.infer<typeof appAbilitiesSchema>;
 

@@ -1,7 +1,7 @@
 import { CurrentSession } from '@/shared/auth/auth.guard';
 import { Public } from '@/shared/auth/public.decorator';
 import { CheckPoliciesApp } from '@/shared/casl/policies.types';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ZodArgs } from 'nestjs-graphql-zod';
 
 import { Session } from '../sessions/entities/session.entity';
@@ -119,5 +119,10 @@ export class UsersResolver {
     input: UpdateRoleInput,
   ) {
     return this.usersService.updateRole(input);
+  }
+
+  @ResolveField()
+  owns_organizations(@Parent() { id }: User) {
+    return this.usersService.owns_organizations(id);
   }
 }

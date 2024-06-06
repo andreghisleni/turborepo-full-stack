@@ -6,6 +6,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { join } from 'node:path';
 
+import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './shared/auth/auth.module';
 import { CaslModule } from './shared/casl/casl.module';
@@ -66,6 +67,8 @@ import { MailModule } from './shared/mail/mail.module';
     UsersModule,
     AuthModule,
     CaslModule,
+
+    OrganizationsModule,
 
     // Other modules
 
