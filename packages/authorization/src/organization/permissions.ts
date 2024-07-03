@@ -18,8 +18,7 @@ export const permissions: Record<Role, PermissionsByRole> = {
   },
   MEMBER(user, { can }) {
     can('get', 'User');
+    can('get', 'Organization');
   },
-  // BILLING(_, { can }) {
-  //   can('manage', 'Billing')
-  // },
+  BILLING(_, { can }) {},
 };

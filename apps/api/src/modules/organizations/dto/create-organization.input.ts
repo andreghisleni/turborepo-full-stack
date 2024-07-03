@@ -9,6 +9,8 @@ export const CreateOrganizationObject = {
   ownerId: z.string().describe('The owner of the organization'),
 };
 
-export const CreateOrganizationSchema = z.object(CreateOrganizationObject).describe('CreateOrganizationInput:');
+export const CreateOrganizationSchema = z
+  .object(CreateOrganizationObject)
+  .describe('CreateOrganizationInput:');
 
 export type CreateOrganizationInput = ZodArgs.Of<typeof CreateOrganizationSchema>;

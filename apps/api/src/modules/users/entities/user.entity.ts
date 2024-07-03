@@ -1,5 +1,6 @@
 import { Organization } from '@/modules/organizations/entities/organization.entity';
 import { Session } from '@/modules/sessions/entities/session.entity';
+import { application } from '@full-stack/authorization';
 import { ObjectType, HideField, Field } from '@nestjs/graphql';
 
 @ObjectType()
@@ -14,7 +15,7 @@ export class User {
   passwordHash: string;
 
   @Field(() => String)
-  role: 'ADMIN' | 'DEFAULT';
+  role: application.Role;
 
   createdAt: Date;
   updatedAt: Date;

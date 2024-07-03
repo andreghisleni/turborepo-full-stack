@@ -3,6 +3,8 @@ export enum MailTemplate {
   NewPropertyOwner = 'new-property-owner.hbs',
   ForgotPassword = 'forgot-password.hbs',
   NewOrganization = 'new-organization.hbs',
+  InviteUser = 'invite-user.hbs',
+  InviteNewUser = 'invite-new-user.hbs',
 }
 
 export type MailTemplateData = {
@@ -25,6 +27,19 @@ export type MailTemplateData = {
     organization: {
       name: string;
     };
+  };
+  [MailTemplate.InviteUser]: {
+    name: string;
+    author: { name: string };
+    org: { name: string };
+    accept_invite_url: string;
+  };
+  [MailTemplate.InviteNewUser]: {
+    name: string;
+    author: { name: string };
+    org: { name: string };
+    accept_invite_url: string;
+    create_account_accept_invite_url: string;
   };
 };
 

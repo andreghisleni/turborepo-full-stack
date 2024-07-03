@@ -8,7 +8,7 @@
   [x] criação
   [x] edição
   [ ] vinculação de usuário
-    [ ] mudança de permicao por usuários
+    [ ] mudança de permissão por usuários
     [ ] remoção de usuário
 
 

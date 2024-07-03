@@ -1,4 +1,7 @@
-import { ApolloServerPluginLandingPageLocalDefault, ApolloServerPluginLandingPageProductionDefault } from '@apollo/server/plugin/landingPage/default';
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from '@apollo/server/plugin/landingPage/default';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -6,6 +9,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { join } from 'node:path';
 
+import { InvitesModule } from './modules/invites/invites.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './shared/auth/auth.module';
@@ -58,7 +62,11 @@ import { MailModule } from './shared/mail/mail.module';
               embed: true,
               graphRef: 'andregr',
             })
-          : ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+          : ApolloServerPluginLandingPageLocalDefault({
+              embed: true,
+              collectionId: 'ckuqzvz',
+              operationId: 'ckuqzvz',
+            }),
       ],
     }),
     CloudFlareModule,
@@ -69,6 +77,7 @@ import { MailModule } from './shared/mail/mail.module';
     CaslModule,
 
     OrganizationsModule,
+    InvitesModule,
 
     // Other modules
 

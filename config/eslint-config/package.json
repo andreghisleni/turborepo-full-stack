@@ -10,7 +10,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "@agsolutions/eslint-config": "^1.0.28",
+    "@agsolutions/eslint-config": "^1.0.29",
     "@full-stack/prettier": "workspace:*",
     "eslint-config-next": "^14.1.0",
     "eslint-plugin-simple-import-sort": "^10.0.0"

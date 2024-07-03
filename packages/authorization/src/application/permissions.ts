@@ -32,6 +32,9 @@ export const permissions: Record<Role, PermissionsByRole> = {
     can(['update'], 'User', {
       id: { $eq: user.id },
     });
+
+    can(['get'], 'Organization');
+    can(['get'], 'Invite');
   },
   // BILLING(_, { can }) {
   //   can('manage', 'Billing')

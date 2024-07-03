@@ -18,6 +18,22 @@ input CreateAuthInput {
 }
 
 """"""
+input CreateInviteInput {
+  """The email of the invite"""
+  email: String!
+
+  """The role of the invite"""
+  role: CreateInviteInput_RoleEnum_0!
+}
+
+"""The role of the invite"""
+enum CreateInviteInput_RoleEnum_0 {
+  ADMIN
+  BILLING
+  MEMBER
+}
+
+""""""
 input CreateOrganizationInput {
   """The domain of the organization"""
   domain: String
@@ -52,9 +68,22 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Invite {
+  author: User
+  createdAt: DateTime!
+  email: String!
+  id: String!
+  organization: Organization!
+  role: String!
+}
+
 type Mutation {
   activateUser(id: String!): User!
   blockUser(id: String!): User!
+  createInvite(
+    """Create a new invite"""
+    input: CreateInviteInput!
+  ): Invite!
   createOrganization(
     """Create a new organization"""
     input: CreateOrganizationInput!
@@ -98,6 +127,7 @@ type Organization {
 type Query {
   getTotalOrganizations: Float!
   getTotalUsers: Float!
+  invite(id: String!): Invite!
   organization(id: String!): Organization!
   organizationBySlug(slug: String!): Organization!
   organizations: [Organization!]!
