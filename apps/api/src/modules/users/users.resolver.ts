@@ -54,7 +54,10 @@ export class UsersResolver {
   }
   @CheckPoliciesApp(a => a.can('update', 'User'))
   @Mutation(() => User)
-  updateAvatar(@Args('avatar', { type: () => String }) avatar: string, @CurrentSession() { user }: Session) {
+  updateAvatar(
+    @Args('avatar', { type: () => String }) avatar: string,
+    @CurrentSession() { user }: Session,
+  ) {
     return this.usersService.updateAvatar(user.id, avatar);
   }
 

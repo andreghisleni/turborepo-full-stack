@@ -15,7 +15,10 @@ export class JWTAuthGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | any { // eslint-disable-line
-    const isPublic = this.reflector.getAllAndOverride('isPublic', [context.getHandler(), context.getClass()]);
+    const isPublic = this.reflector.getAllAndOverride('isPublic', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     return isPublic ? true : super.canActivate(context);
   }
 }

@@ -5,5 +5,7 @@ module.exports = {
   rules: {
     // 'simple-import-sort/imports': 'error',
     camelcase: 'off',
+    'no-restricted-syntax': 'off',
+    "jsx-a11y/control-has-associated-label": 'off',
   },
 }

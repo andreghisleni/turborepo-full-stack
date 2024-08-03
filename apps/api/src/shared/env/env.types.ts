@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { z } from 'zod';
 
 export const envSchema = z.object({
-  PORT: z.number().default(3333),
+  PORT: z.number().default(4444),
 
   API_URL: z.string(),
   WEB_URL: z.string(),

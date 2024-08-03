@@ -7,7 +7,12 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { Member } from '@prisma/client';
 
 import { CaslAbilityFactory } from './casl-ability.factory';
-import { CHECK_POLICIES_APP_KEY, CHECK_POLICIES_ORG_KEY, PolicyAppHandler, PolicyOrgHandler } from './policies.types';
+import {
+  CHECK_POLICIES_APP_KEY,
+  CHECK_POLICIES_ORG_KEY,
+  PolicyAppHandler,
+  PolicyOrgHandler,
+} from './policies.types';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {
@@ -17,14 +22,19 @@ export class PoliciesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride('isPublic', [context.getHandler(), context.getClass()]);
+    const isPublic = this.reflector.getAllAndOverride('isPublic', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
     if (isPublic) {
       return true;
     }
 
-    const policyOrgHandlers = this.reflector.get<PolicyOrgHandler[]>(CHECK_POLICIES_ORG_KEY, context.getHandler()) || [];
-    const policyAppHandlers = this.reflector.get<PolicyAppHandler[]>(CHECK_POLICIES_APP_KEY, context.getHandler()) || [];
+    const policyOrgHandlers =
+      this.reflector.get<PolicyOrgHandler[]>(CHECK_POLICIES_ORG_KEY, context.getHandler()) || [];
+    const policyAppHandlers =
+      this.reflector.get<PolicyAppHandler[]>(CHECK_POLICIES_APP_KEY, context.getHandler()) || [];
 
     if (policyOrgHandlers.length === 0 && policyAppHandlers.length === 0) {
       throw new Error('No policies defined');
