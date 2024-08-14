@@ -56,7 +56,21 @@ export class OrganizationsService {
       },
     });
 
-    // TODO: Add owner to members
+    await this.prisma.member.create({
+      data: {
+        role: 'ADMIN',
+        organization: {
+          connect: {
+            id: organization.id,
+          },
+        },
+        user: {
+          connect: {
+            id: owner.id,
+          },
+        },
+      },
+    });
 
     await this.mailService.sendMail({
       to: {

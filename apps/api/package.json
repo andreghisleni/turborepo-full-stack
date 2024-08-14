@@ -13,7 +13,11 @@
     "prisma:g": "prisma generate",
     "prisma:m": "pnpm env:load prisma migrate dev",
     "prisma:s": "pnpm env:load prisma studio",
+    "prisma:se": "pnpm env:load prisma db seed",
     "env:load": "dotenv -e ../../.env --"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "dotenv-cli": "7.3.0",
@@ -65,7 +69,8 @@
     "prisma": "^5.14.0",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.4.3",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "tsx": "^4.16.5"
   },
   "eslintConfig": {
     "extends": [

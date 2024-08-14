@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**",".next/**", "!.next/cache/**"]
@@ -19,6 +19,15 @@
     "start": {
       "dependsOn": ["^start"],
       "persistent": true
+    },
+    "prisma:g": {
+      "dependsOn": ["^prisma:g"]
+    },
+    "prisma:m": {
+      "dependsOn": ["^prisma:m"]
+    },
+    "prisma:s": {
+      "dependsOn": ["^prisma:s"]
     }
   }
 }
