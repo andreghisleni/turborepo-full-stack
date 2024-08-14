@@ -10,6 +10,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { join } from 'node:path';
 
 import { InvitesModule } from './modules/invites/invites.module';
+import { MembersModule } from './modules/members/members.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './shared/auth/auth.module';
@@ -78,6 +79,7 @@ import { MailModule } from './shared/mail/mail.module';
 
     OrganizationsModule,
     InvitesModule,
+    MembersModule,
 
     // Other modules
 

@@ -1,0 +1,36 @@
+query getAllUsers ($filter: FilterUserInput) {
+  users(filter:  $filter) {
+    id
+    name
+    email
+    role
+    activatedAt
+    blockedAt
+    createdAt
+    sessions {
+      updatedAt
+    }
+  }
+  getTotalUsers(filter: $filter)
+}
+
+mutation blockUser($id: String!) {
+  blockUser(id: $id) {
+    id
+    blockedAt
+  }
+}
+
+mutation activateUser($id: String!) {
+  activateUser(id: $id) {
+    id
+    activatedAt
+  }
+}
+
+mutation updateRole($input: UpdateRoleInput!) {
+  updateRole(input: $input) {
+    id
+    role    
+  }
+}

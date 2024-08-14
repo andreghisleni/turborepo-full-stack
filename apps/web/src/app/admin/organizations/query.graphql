@@ -1,0 +1,43 @@
+query getAllUsersToOrganizations  {
+  users(filter:  {
+    limit: 10000
+  }) {
+    id
+    name
+    email
+  }
+}
+
+query getAllOrganizations ($filter: FilterOrganizationInput) {
+  organizations(filter: $filter) {
+    id
+    name
+    owner{
+      id
+      name
+      email
+    }
+    slug
+    domain
+    shouldAttachUsersByDomain
+    createdAt
+    members {
+      id
+      role
+      user {
+        id
+        name
+        email
+      }
+    }
+  }
+
+  getTotalOrganizations(filter: $filter)
+}
+
+mutation createOrganization ($input: CreateOrganizationInput!) {
+  createOrganization(input: $input) {
+    id
+    name
+  }
+}

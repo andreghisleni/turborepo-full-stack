@@ -3,8 +3,7 @@ export function calculateDiscountedValue(
   discount: number,
   type: 'PERCENTAGE' | 'FIXED_AMOUNT',
 ): number {
-  const discountAmount =
-    type === 'PERCENTAGE' ? (originalValue * discount) / 100 : discount
-  const discountedValue = originalValue - discountAmount
-  return discountedValue
+  const discountAmount = type === 'PERCENTAGE' ? (originalValue * discount) / 100 : discount;
+  const discountedValue = originalValue - discountAmount;
+  return discountedValue;
 }

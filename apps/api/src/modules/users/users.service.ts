@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 
 import { CreateUserInput } from './dto/create-user.input';
+import { FilterUserInput } from './dto/filter-input';
 import { ResetPasswordInput } from './dto/reset-password.input';
 import { UpdateRoleInput } from './dto/update-role.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -36,6 +37,7 @@ export class UsersService {
         ...createUserInput,
         passwordHash: hashedPassword,
         activatedAt: totalUsers === 0 ? new Date() : null,
+        role: totalUsers === 0 ? 'ADMIN' : 'DEFAULT',
       },
     });
 
@@ -56,12 +58,34 @@ export class UsersService {
     return user;
   }
 
-  async findAll() {
-    return this.prisma.user.findMany();
+  async findAll(filter: FilterUserInput) {
+    return this.prisma.user.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+      skip: filter.page * filter.limit,
+      take: filter.limit,
+      where: {
+        name: {
+          contains: filter.name,
+          mode: 'insensitive',
+        },
+      },
+    });
   }
 
-  async findTotalUsers() {
-    return this.prisma.user.count();
+  async findTotalUsers(filter: FilterUserInput) {
+    return this.prisma.user.count({
+      orderBy: {
+        name: 'asc',
+      },
+      where: {
+        name: {
+          contains: filter.name,
+          mode: 'insensitive',
+        },
+      },
+    });
   }
 
   async findById(id: string) {
@@ -264,5 +288,29 @@ export class UsersService {
         where: { id },
       })
       .owns_organizations();
+  }
+
+  async sessions(id: string) {
+    return this.prisma.user
+      .findUnique({
+        where: { id },
+      })
+      .sessions();
+  }
+
+  async member_on(id: string) {
+    return this.prisma.user
+      .findUnique({
+        where: { id },
+      })
+      .member_on();
+  }
+
+  async invites(id: string) {
+    return this.prisma.user
+      .findUnique({
+        where: { id },
+      })
+      .invites();
   }
 }

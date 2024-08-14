@@ -7,6 +7,7 @@ import { GraphQLError } from 'graphql';
 
 import { UsersService } from '../users/users.service';
 import { CreateOrganizationInput } from './dto/create-organization.input';
+import { FilterOrganizationInput } from './dto/filter-input';
 import { UpdateOrganizationInput } from './dto/update-organization.input';
 
 @Injectable()
@@ -92,12 +93,34 @@ export class OrganizationsService {
     return organization;
   }
 
-  async findAll() {
-    return this.prisma.organization.findMany();
+  async findAll(filter: FilterOrganizationInput) {
+    return this.prisma.organization.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+      skip: filter.page * filter.limit,
+      take: filter.limit,
+      where: {
+        name: {
+          contains: filter.name,
+          mode: 'insensitive',
+        },
+      },
+    });
   }
 
-  async findTotalOrganizations() {
-    return this.prisma.organization.count();
+  async findTotalOrganizations(filter: FilterOrganizationInput) {
+    return this.prisma.organization.count({
+      orderBy: {
+        name: 'asc',
+      },
+      where: {
+        name: {
+          contains: filter.name,
+          mode: 'insensitive',
+        },
+      },
+    });
   }
 
   async findById(id: string) {
@@ -144,6 +167,11 @@ export class OrganizationsService {
     return this.prisma.organization.findUnique({ where: { id: organizationId } }).owner();
   }
 
-  // TODO: Add members field
-  // TODO: Add invites field
+  async members(organizationId: string) {
+    return this.prisma.organization.findUnique({ where: { id: organizationId } }).members();
+  }
+
+  async invites(organizationId: string) {
+    return this.prisma.organization.findUnique({ where: { id: organizationId } }).invites();
+  }
 }

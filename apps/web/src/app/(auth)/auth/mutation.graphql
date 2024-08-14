@@ -1,0 +1,15 @@
+mutation createUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+      name
+      email
+    }
+  }
+
+mutation sendForgotPasswordEmail($email: String!) {
+    sendForgotPasswordEmail(email: $email)
+  }
+
+mutation resetPassword($input: ResetPasswordInput!) {
+    resetPassword(input: $input)
+  }

@@ -36,6 +36,14 @@ export default function SignInPage() {
             Não tem uma conta? Cadastre-se
           </Link>
         </p>
+        <p className="px-8 text-center text-sm text-muted-foreground">
+          <Link
+            href="/auth/send-forgot-password"
+            className="hover:text-brand underline underline-offset-4"
+          >
+            Esqueceu a senha? Recupere a sua senha
+          </Link>
+        </p>
       </div>
     </div>
   );

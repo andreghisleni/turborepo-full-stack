@@ -15,6 +15,7 @@
     "assets": [
       {
         "include": "shared/mail/templates/*.hbs",
+        "outDir": "dist/src/",
         "watchAssets": true
       }
     ]

@@ -18,6 +18,13 @@ const SIGN_IN = gql`
           name
           email
           role
+          member_on {
+            id
+            organization {
+              id
+              slug
+            }
+          }
         }
       }
     }
@@ -45,6 +52,13 @@ export async function POST(request: NextRequest) {
             name: string;
             email: string;
             role: string;
+            member_on: {
+              id: string;
+              organization: {
+                id: string;
+                slug: string;
+              };
+            }[];
           };
         };
       };
@@ -78,7 +92,11 @@ export async function POST(request: NextRequest) {
     });
     setCookie('user', JSON.stringify(user), {
       cookies,
-      expires: new Date(Date.now() + 1000 * 60 * 1), // 1 minute
+      expires: new Date(Date.now() + 1000 * 60 * 3), // 1 minute
+    });
+
+    setCookie('user-role', JSON.stringify({ id: user.id, role: user.role }), {
+      cookies,
     });
 
     return NextResponse.json(d.createSession, { status: 201 });

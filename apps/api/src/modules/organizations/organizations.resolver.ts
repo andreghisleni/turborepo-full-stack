@@ -3,6 +3,7 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/g
 import { ZodArgs } from 'nestjs-graphql-zod';
 
 import { CreateOrganizationInput, CreateOrganizationSchema } from './dto/create-organization.input';
+import { FilterOrganizationInput, FilterOrganizationSchema } from './dto/filter-input';
 import { UpdateOrganizationInput, UpdateOrganizationSchema } from './dto/update-organization.input';
 import { Organization } from './entities/organization.entity';
 import { OrganizationsService } from './organizations.service';
@@ -25,8 +26,30 @@ export class OrganizationsResolver {
 
   @CheckPoliciesApp(a => a.can('get', 'Organization'))
   @Query(() => [Organization], { name: 'organizations' })
-  findAll() {
-    return this.organizationsService.findAll();
+  findAll(
+    @ZodArgs(FilterOrganizationSchema, 'filter', {
+      name: 'FilterOrganizationInput',
+      description: 'Filtered a new client',
+      nullable: true,
+      defaultValue: {},
+    })
+    filter: FilterOrganizationInput,
+  ) {
+    return this.organizationsService.findAll(filter);
+  }
+
+  @CheckPoliciesApp(a => a.can('get', 'Organization'))
+  @Query(() => Number)
+  getTotalOrganizations(
+    @ZodArgs(FilterOrganizationSchema, 'filter', {
+      name: 'FilterOrganizationInput',
+      description: 'Filtered a new client',
+      nullable: true,
+      defaultValue: {},
+    })
+    filter: FilterOrganizationInput,
+  ) {
+    return this.organizationsService.findTotalOrganizations(filter);
   }
 
   @CheckPoliciesApp(a => a.can('get', 'Organization'))
@@ -53,17 +76,18 @@ export class OrganizationsResolver {
     return this.organizationsService.update(input);
   }
 
-  @CheckPoliciesApp(a => a.can('get', 'Organization'))
-  @Query(() => Number)
-  getTotalOrganizations() {
-    return this.organizationsService.findTotalOrganizations();
-  }
-
   @ResolveField()
   owner(@Parent() { id }: Organization) {
     return this.organizationsService.owner(id);
   }
 
-  // TODO: Add members field
-  // TODO: Add invites field
+  @ResolveField()
+  members(@Parent() { id }: Organization) {
+    return this.organizationsService.members(id);
+  }
+
+  @ResolveField()
+  invites(@Parent() { id }: Organization) {
+    return this.organizationsService.invites(id);
+  }
 }

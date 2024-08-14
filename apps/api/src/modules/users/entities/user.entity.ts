@@ -1,3 +1,5 @@
+import { Invite } from '@/modules/invites/entities/invite.entity';
+import { Member } from '@/modules/members/entities/member.entity';
 import { Organization } from '@/modules/organizations/entities/organization.entity';
 import { Session } from '@/modules/sessions/entities/session.entity';
 import { application } from '@full-stack/authorization';
@@ -25,11 +27,10 @@ export class User {
   activatedAt?: Date;
   blockedAt?: Date;
 
-  tokens: string; // TODO: Create token entity
   ips: string; // TODO: Create ip entity
 
-  invites: string; // TODO: Create invite entity
-  member_on: string; // TODO: Create organization entity
+  invites: Invite[];
+  member_on: Member[];
   owns_organizations: Organization[];
 
   sessions: Session[];

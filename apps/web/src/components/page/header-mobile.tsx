@@ -5,10 +5,10 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { SIDENAV_ITEMS } from '@/constants';
 import { SideNavItem } from '@/types';
 import { Icon } from '@iconify/react';
 import { motion, useCycle } from 'framer-motion';
+import { useAuth } from '@/hooks/auth';
 import { ThemeSwitcher } from './theme-switcher';
 
 type MenuItemWithSubMenuProps = {
@@ -35,11 +35,14 @@ const sidebar = {
   },
 };
 
-export const HeaderMobile = () => {
+export const HeaderMobile = ({ SIDENAV_ITEMS }: { SIDENAV_ITEMS: SideNavItem[] }) => {
   const pathname = usePathname();
   const containerRef = useRef(null);
   const { height } = useDimensions(containerRef);
   const [isOpen, toggleOpen] = useCycle(false, true);
+  const { user } = useAuth();
+
+  const itens = SIDENAV_ITEMS;
 
   return (
     <motion.nav
@@ -50,31 +53,35 @@ export const HeaderMobile = () => {
       ref={containerRef}
     >
       <motion.div className="absolute inset-0 right-0 w-full bg-background" variants={sidebar} />
-      <motion.ul variants={variants} className="absolute grid w-full gap-3 px-10 py-16">
-        {SIDENAV_ITEMS.map((item, idx) => {
-          const isLastItem = idx === SIDENAV_ITEMS.length - 1; // Check if it's the last item
+      {user && (
+        <motion.ul variants={variants} className="absolute grid w-full gap-3 px-10 py-16">
+          {itens
+            .filter(i => i.show)
+            .map((item, idx) => {
+              const isLastItem = idx === itens.length - 1; // Check if it's the last item
 
-          return (
-            <div key={idx}>
-              {item.submenu ? (
-                <MenuItemWithSubMenu item={item} toggleOpen={toggleOpen} />
-              ) : (
-                <MenuItem>
-                  <Link
-                    href={item.path}
-                    onClick={() => toggleOpen()}
-                    className={`flex w-full text-2xl ${item.path === pathname ? 'font-bold' : ''}`}
-                  >
-                    {item.title}
-                  </Link>
-                </MenuItem>
-              )}
+              return (
+                <div key={idx}>
+                  {item.submenu ? (
+                    <MenuItemWithSubMenu item={item} toggleOpen={toggleOpen} />
+                  ) : (
+                    <MenuItem>
+                      <Link
+                        href={item.path}
+                        onClick={() => toggleOpen()}
+                        className={`flex w-full text-2xl ${item.path === pathname ? 'font-bold' : ''}`}
+                      >
+                        {item.title}
+                      </Link>
+                    </MenuItem>
+                  )}
 
-              {!isLastItem && <MenuItem className="my-3 h-px w-full bg-gray-300" />}
-            </div>
-          );
-        })}
-      </motion.ul>
+                  {!isLastItem && <MenuItem className="my-3 h-px w-full bg-gray-300" />}
+                </div>
+              );
+            })}
+        </motion.ul>
+      )}
 
       <div className="pointer-events-auto absolute right-4 top-[14px] z-30 flex w-auto gap-8">
         <ThemeSwitcher />
@@ -153,19 +160,21 @@ const MenuItemWithSubMenu: React.FC<MenuItemWithSubMenuProps> = ({ item, toggleO
       </MenuItem>
       <div className="ml-2 mt-2 flex flex-col space-y-2">
         {subMenuOpen &&
-          item.subMenuItems?.map((subItem, subIdx) => {
-            return (
-              <MenuItem key={subIdx}>
-                <Link
-                  href={subItem.path}
-                  onClick={() => toggleOpen()}
-                  className={` ${subItem.path === pathname ? 'font-bold' : ''}`}
-                >
-                  {subItem.title}
-                </Link>
-              </MenuItem>
-            );
-          })}
+          item.subMenuItems
+            ?.filter(i => i.show)
+            .map((subItem, subIdx) => {
+              return (
+                <MenuItem key={subIdx}>
+                  <Link
+                    href={subItem.path}
+                    onClick={() => toggleOpen()}
+                    className={` ${subItem.path === pathname ? 'font-bold' : ''}`}
+                  >
+                    {subItem.title}
+                  </Link>
+                </MenuItem>
+              );
+            })}
       </div>
     </>
   );

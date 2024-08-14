@@ -54,7 +54,35 @@ export function SignInForm() {
         title: 'Bem-vindo!',
         description: 'Você foi autenticado com sucesso.',
       });
-      router.push('/');
+
+      if (!response.data?.session.user) {
+        router.replace('/');
+        return;
+      }
+
+      const { role, member_on } = response.data?.session.user; // eslint-disable-line
+
+      if (role === 'ADMIN' && member_on.length > 0) {
+        router.replace(`/select-type`);
+        return;
+      }
+
+      if (role === 'ADMIN') {
+        router.replace('/admin');
+        return;
+      }
+
+      if (role === 'DEFAULT' && member_on.length === 1) {
+        router.replace(`/app/${member_on[0].organization.slug}`);
+        return;
+      }
+
+      if (role === 'DEFAULT' && member_on.length > 1) {
+        router.replace(`/select-organization`);
+        return;
+      }
+
+      router.replace('/');
     }
   }
 

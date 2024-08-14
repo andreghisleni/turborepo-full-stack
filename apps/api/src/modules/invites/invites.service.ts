@@ -102,4 +102,134 @@ export class InvitesService {
       where: { id },
     });
   }
+
+  async author(id: string) {
+    return this.prisma.invite
+      .findUnique({
+        where: { id },
+      })
+      .author();
+  }
+
+  async organization(id: string) {
+    return this.prisma.invite
+      .findUnique({
+        where: { id },
+      })
+      .organization();
+  }
+
+  async acceptInvite(id: string, userId: string) {
+    const invite = await this.prisma.invite.findUnique({
+      where: { id },
+    });
+
+    if (!invite) {
+      throw new GraphQLError('Invite not found', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    if (invite.acceptedAt) {
+      throw new GraphQLError('Invite already accepted', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    if (invite.rejectedAt) {
+      throw new GraphQLError('Invite already rejected', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new GraphQLError('User not found', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    if (invite.email !== user.email) {
+      throw new GraphQLError('Email does not match', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    await this.prisma.member.create({
+      data: {
+        role: invite.role,
+        organization: {
+          connect: {
+            id: invite.organizationId,
+          },
+        },
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    await this.prisma.invite.update({
+      where: { id },
+      data: {
+        acceptedAt: new Date(),
+      },
+    });
+
+    return invite;
+  }
+
+  async rejectInvite(id: string) {
+    const invite = await this.prisma.invite.findUnique({
+      where: { id },
+    });
+
+    if (!invite) {
+      throw new GraphQLError('Invite not found', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    if (invite.acceptedAt) {
+      throw new GraphQLError('Invite already accepted', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    if (invite.rejectedAt) {
+      throw new GraphQLError('Invite already rejected', {
+        extensions: {
+          code: 400,
+        },
+      });
+    }
+
+    await this.prisma.invite.update({
+      where: { id },
+      data: {
+        rejectedAt: new Date(),
+      },
+    });
+
+    return invite;
+  }
 }

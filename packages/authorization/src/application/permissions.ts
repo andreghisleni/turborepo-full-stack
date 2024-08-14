@@ -34,7 +34,7 @@ export const permissions: Record<Role, PermissionsByRole> = {
     });
 
     can(['get'], 'Organization');
-    can(['get'], 'Invite');
+    can(['get', 'accept', 'reject'], 'Invite');
   },
   // BILLING(_, { can }) {
   //   can('manage', 'Billing')

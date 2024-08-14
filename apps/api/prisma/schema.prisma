@@ -91,6 +91,9 @@ model Invite {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId String       @map("organization_id")
 
+  acceptedAt DateTime? @map("accepted_at")
+  rejectedAt DateTime? @map("rejected_at")
+
   @@unique([email, organizationId])
   @@index([email])
   @@map("invites")

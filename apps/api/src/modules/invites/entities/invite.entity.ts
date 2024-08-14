@@ -16,4 +16,7 @@ export class Invite {
   organization: Organization;
 
   createdAt: Date;
+
+  acceptedAt?: Date;
+  rejectedAt?: Date;
 }

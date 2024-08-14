@@ -6,6 +6,7 @@ import { ZodArgs } from 'nestjs-graphql-zod';
 
 import { Session } from '../sessions/entities/session.entity';
 import { CreateUserInput, CreateUserSchema } from './dto/create-user.input';
+import { FilterUserInput, FilterUserSchema } from './dto/filter-input';
 import { ResetPasswordInput, ResetPasswordSchema } from './dto/reset-password.input';
 import { UpdateRoleInput, UpdateRoleSchema } from './dto/update-role.input';
 import { UpdateUserInput, UpdateUserSchema } from './dto/update-user.input';
@@ -30,8 +31,30 @@ export class UsersResolver {
 
   @CheckPoliciesApp(a => a.can('get', 'User'))
   @Query(() => [User], { name: 'users' })
-  findAll() {
-    return this.usersService.findAll();
+  findAll(
+    @ZodArgs(FilterUserSchema, 'filter', {
+      name: 'FilterUserInput',
+      description: 'Filtered a new client',
+      nullable: true,
+      defaultValue: {},
+    })
+    filter: FilterUserInput,
+  ) {
+    return this.usersService.findAll(filter);
+  }
+
+  @CheckPoliciesApp(a => a.can('get', 'User'))
+  @Query(() => Number)
+  getTotalUsers(
+    @ZodArgs(FilterUserSchema, 'filter', {
+      name: 'FilterUserInput',
+      description: 'Filtered a new client',
+      nullable: true,
+      defaultValue: {},
+    })
+    filter: FilterUserInput,
+  ) {
+    return this.usersService.findTotalUsers(filter);
   }
 
   @CheckPoliciesApp(a => a.can('get', 'User'))
@@ -52,6 +75,7 @@ export class UsersResolver {
   ) {
     return this.usersService.update(user.id, input);
   }
+
   @CheckPoliciesApp(a => a.can('update', 'User'))
   @Mutation(() => User)
   updateAvatar(
@@ -88,12 +112,6 @@ export class UsersResolver {
     return user;
   }
 
-  @CheckPoliciesApp(a => a.can('get', 'User'))
-  @Query(() => Number)
-  getTotalUsers() {
-    return this.usersService.findTotalUsers();
-  }
-
   @Public()
   @Mutation(() => Boolean)
   async sendForgotPasswordEmail(@Args('email', { type: () => String }) email: string) {
@@ -127,5 +145,20 @@ export class UsersResolver {
   @ResolveField()
   owns_organizations(@Parent() { id }: User) {
     return this.usersService.owns_organizations(id);
+  }
+
+  @ResolveField()
+  sessions(@Parent() { id }: User) {
+    return this.usersService.sessions(id);
+  }
+
+  @ResolveField()
+  invites(@Parent() { id }: User) {
+    return this.usersService.invites(id);
+  }
+
+  @ResolveField()
+  member_on(@Parent() { id }: User) {
+    return this.usersService.member_on(id);
   }
 }

@@ -8,6 +8,7 @@ import { PropsWithChildren } from 'react';
 
 export const httpLink = createHttpLink({
   uri: `${env.NEXT_PUBLIC_API_URL}/graphql`,
+  fetch,
 });
 
 const authMiddleware = setContext(async (operation, { headers }) => {

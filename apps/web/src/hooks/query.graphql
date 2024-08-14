@@ -1,0 +1,14 @@
+query GetMyProfile {
+  profile {
+    activatedAt
+    avatarUrl
+    blockedAt
+    createdAt
+    email
+    id
+    name
+    passwordUpdatedAt
+    updatedAt
+    role
+  }
+}

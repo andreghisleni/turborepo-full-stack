@@ -73,7 +73,7 @@ const authMiddleware: AuthMiddleware = (...args: unknown[]) => {
     // if don't have token or refresh token, redirect to sign-in
     if (!token || !rt) {
       logger.debug('No token or refresh token found');
-      return NextResponse.rewrite(new URL('/auth/sign-in', _req.nextUrl.href));
+      return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
     }
 
     const tokenPayload = jwt.decode(token);
@@ -81,12 +81,12 @@ const authMiddleware: AuthMiddleware = (...args: unknown[]) => {
 
     if (!tokenPayload || !refreshTokenPayload) {
       logger.debug('No token or refresh token found');
-      return NextResponse.rewrite(new URL('/auth/sign-in', _req.nextUrl.href));
+      return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
     }
 
     if (typeof tokenPayload === 'string' || typeof refreshTokenPayload === 'string') {
       logger.debug('Token or refresh token are invalid');
-      return NextResponse.rewrite(new URL('/auth/sign-in', _req.nextUrl.href));
+      return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
     }
 
     const tokenPayloadType = tokenPayload as {
@@ -103,7 +103,7 @@ const authMiddleware: AuthMiddleware = (...args: unknown[]) => {
       refreshTokenPayloadType.exp - Date.now() / 1000 <= 0
     ) {
       logger.debug('Token and refresh token are expired');
-      return NextResponse.rewrite(new URL('/auth/sign-in', _req.nextUrl.href));
+      return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
     }
 
     // if token is expired but refresh token is not, refresh token
@@ -122,6 +122,28 @@ const authMiddleware: AuthMiddleware = (...args: unknown[]) => {
     logger.debug(() => ({
       mergedHeaders: stringifyHeaders(finalRes.headers),
     }));
+
+    const isAdminPages = nextRequest.nextUrl.pathname.startsWith('/admin');
+
+    if (isAdminPages) {
+      logger.debug('Admin page detected');
+
+      const userRole = getCookie(_req, 'user-role');
+
+      if (!userRole) {
+        logger.debug('No userRole found');
+        return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
+      }
+
+      const { role } = JSON.parse(userRole);
+
+      logger.debug('Session', { role });
+
+      if (role !== 'ADMIN') {
+        logger.debug('User is not an admin');
+        return NextResponse.redirect(new URL('/unauthorized', _req.nextUrl.href));
+      }
+    }
 
     const result = NextResponse.next();
 

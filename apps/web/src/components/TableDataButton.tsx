@@ -1,14 +1,14 @@
-import { Column } from '@tanstack/react-table'
-import { ArrowUpDown } from 'lucide-react'
-import React, { ReactNode } from 'react'
+import { CellContext, Column } from '@tanstack/react-table';
+import { ArrowUpDown } from 'lucide-react';
+import React, { ReactNode } from 'react';
 
-import { Button } from './ui/button'
+import { Button } from './ui/button';
 
 // import { Container } from './styles';
 
 export const TableDataButton: React.FC<{
-  column: Column<any> // eslint-disable-line @typescript-eslint/no-explicit-any
-  children: ReactNode
+  column: Column<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  children: ReactNode;
 }> = ({ column, children }) => {
   return (
     <Button
@@ -19,14 +19,17 @@ export const TableDataButton: React.FC<{
       {children}
       <ArrowUpDown className="ml-2 h-4 w-4" />
     </Button>
-  )
-}
+  );
+};
 
 export const tableDataButton =
   (label: string) =>
   ({ column }: {column: Column<any>}) => <TableDataButton column={column}>{label}</TableDataButton>// eslint-disable-line
 
-export const tdb = (name: string, label: string) => ({
-  accessorKey: name,
-  header: tableDataButton(label),
-})
+export const tdb = (name: string, label: string, cell?: (c: CellContext<any, unknown>) => any) => ({
+  ...{
+    accessorKey: name,
+    header: tableDataButton(label),
+  },
+  ...(cell ? { cell } : {}),
+});

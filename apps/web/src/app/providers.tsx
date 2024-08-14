@@ -13,9 +13,9 @@ export function Providers({ children }: { children: ReactNode }) {
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <JotaiProvider>
         <TooltipProvider>
-          <AuthProvider>
-            <ApolloProviderWrapper>{children}</ApolloProviderWrapper>
-          </AuthProvider>
+          <ApolloProviderWrapper>
+            <AuthProvider>{children}</AuthProvider>
+          </ApolloProviderWrapper>
         </TooltipProvider>
       </JotaiProvider>
     </ThemeProvider>

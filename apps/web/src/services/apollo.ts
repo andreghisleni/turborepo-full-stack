@@ -7,6 +7,7 @@ import { cookies } from 'next/headers';
 
 export const httpLink = createHttpLink({
   uri: `${env.NEXT_PUBLIC_API_URL}/graphql`,
+  fetch,
 });
 
 const authLink = setContext(async (_, { headers }) => {

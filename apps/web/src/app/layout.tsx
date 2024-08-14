@@ -28,12 +28,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       {env.NODE_ENV === 'production' && (
         <script
           defer
-          data-domain="eventos.gexapeco.com"
+          data-domain="eventos..com"
           src="https://analytics.andreg.com.br/js/script.js"
         />
       )}
 
-      <body className="overflow-y-hidden antialiased">
+      <body className="antialiased">
         <Providers>
           {children}
 

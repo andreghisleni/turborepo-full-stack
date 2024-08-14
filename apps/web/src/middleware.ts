@@ -1,10 +1,11 @@
-import { authMiddleware } from "./auth/middleware/authMiddleware";
+import { authMiddleware } from './auth/middleware/authMiddleware';
 
 export const middleware = authMiddleware({
-  ignoredRoutes: ["/api/(.*)", "/auth/(.*)", "/sale/client/code/(.*)"],
+  ignoredRoutes: ['/api/(.*)', '/auth/(.*)', '/sale/client/code/(.*)'],
+
   // debug: true,
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(trpc)(.*)"],
+  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(trpc)(.*)'],
 };

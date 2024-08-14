@@ -2,7 +2,6 @@
   "name": "full-stack",
   "private": true,
   "scripts": {
-    "predev": "pnpm prisma:m && pnpm prisma:g",
     "dev": "turbo run dev --parallel --",
     "start": "turbo run start --",
     "build": "turbo run build --",
@@ -13,7 +12,7 @@
     "prisma:s": "turbo run prisma:s --"
   },
   "devDependencies": {
-    "turbo": "latest"
+    "turbo": "2.0.12"
   },
   "packageManager": "pnpm@9.1.1",
   "engines": {

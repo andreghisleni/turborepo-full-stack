@@ -11,6 +11,21 @@ const REFRESH_TOKEN = gql`
     refreshSession(refreshToken: $refreshToken) {
       token
       refreshToken
+      session {
+        user {
+          id
+          name
+          email
+          role
+          member_on {
+            id
+            organization {
+              id
+              slug
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -29,6 +44,21 @@ export async function POST(request: NextRequest) {
       refreshSession: {
         token: string;
         refreshToken: string;
+        session: {
+          user: {
+            id: string;
+            name: string;
+            email: string;
+            role: string;
+            member_on: {
+              id: string;
+              organization: {
+                id: string;
+                slug: string;
+              };
+            }[];
+          };
+        };
       };
     }>({
       mutation: REFRESH_TOKEN,
@@ -49,6 +79,17 @@ export async function POST(request: NextRequest) {
     setCookie('refreshToken', refreshTokenNew, {
       cookies,
     });
+
+    setCookie(
+      'user-role',
+      JSON.stringify(refreshResolverResponse.data?.refreshSession.session.user),
+      {
+        cookies,
+      },
+    );
+    setCookie('user', JSON.stringify(refreshResolverResponse.data?.refreshSession.session.user), {
+      cookies,
+    });
     return NextResponse.json({ token }, { status: 201 });
   } catch (error: any) {
     deleteCookie('token', {
@@ -60,7 +101,7 @@ export async function POST(request: NextRequest) {
     deleteCookie('user', {
       cookies,
     });
-    deleteCookie('permissions', {
+    deleteCookie('user-role', {
       cookies,
     });
     return new Response(error, { status: 400 });

@@ -16,7 +16,7 @@ export async function GET(_request: NextRequest) {
     deleteCookie('user', {
       cookies,
     });
-    deleteCookie('permissions', {
+    deleteCookie('user-role', {
       cookies,
     });
 

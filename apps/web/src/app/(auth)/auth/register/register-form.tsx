@@ -3,13 +3,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { gql, useMutation } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, LogIn } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { z } from 'zod';
+import { useCreateUserMutation } from '@/generated/graphql';
 
 const registerFormSchema = z
   .object({
@@ -25,21 +25,11 @@ const registerFormSchema = z
 
 type RegisterFormSchema = z.infer<typeof registerFormSchema>;
 
-const CREATE_USER = gql`
-  mutation createUser($input: CreateUserInput!) {
-    createUser(input: $input) {
-      id
-      name
-      email
-    }
-  }
-`;
-
 export function RegisterForm() {
   const { toast } = useToast();
   const router = useRouter();
 
-  const [createUser] = useMutation(CREATE_USER, {
+  const [createUser] = useCreateUserMutation({
     onError: error => {
       toast({
         title: 'Erro na autenticação',
@@ -49,10 +39,10 @@ export function RegisterForm() {
     },
     onCompleted: () => {
       toast({
-        title: 'Bem-vindo!',
-        description: 'Você foi autenticado com sucesso.',
+        title: 'Usuário criado com sucesso',
+        description: 'Faça login para continuar',
       });
-      router.push('/');
+      router.replace('/auth/sign-in');
     },
   });
 

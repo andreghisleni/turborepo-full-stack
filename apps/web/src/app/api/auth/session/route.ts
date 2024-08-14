@@ -14,15 +14,24 @@ const GET_SESSION = gql`
         name
         email
         role
+        member_on {
+          id
+          organization {
+            id
+            slug
+          }
+        }
       }
     }
   }
 `;
 
-async function getServerSession() {
+export async function getServerSession() {
   'use server';
 
   const has = hasCookie('user', { cookies });
+
+  console.log('has', has); // eslint-disable-line no-console
 
   if (!has) {
     const {
@@ -35,6 +44,13 @@ async function getServerSession() {
           name: string;
           email: string;
           role: string;
+          member_on: {
+            id: string;
+            organization: {
+              id: string;
+              slug: string;
+            };
+          }[];
         };
       };
     }>({

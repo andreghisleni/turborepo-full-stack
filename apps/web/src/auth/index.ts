@@ -2,13 +2,32 @@ import { api } from '@/services/api';
 
 export const signIn = async ({ email, password }: { email: string; password: string }) => {
   try {
-    await api.post('/auth/sign-in', {
+    const response = await api.post<{
+      token: string;
+      refreshToken: string;
+      session: {
+        user: {
+          id: string;
+          name: string;
+          email: string;
+          role: string;
+          member_on: {
+            id: string;
+            organization: {
+              id: string;
+              slug: string;
+            };
+          }[];
+        };
+      };
+    }>('/auth/sign-in', {
       email,
       password,
     });
 
     return {
       errors: null,
+      data: response.data,
     };
   } catch (error: any) {
     return {

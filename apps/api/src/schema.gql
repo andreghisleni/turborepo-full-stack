@@ -68,16 +68,63 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+""""""
+input FilterMemberInput {
+  """Limit"""
+  limit: Float = 20
+
+  """Filter"""
+  name: String! = ""
+
+  """Page"""
+  page: Float = 0
+}
+
+""""""
+input FilterOrganizationInput {
+  """Limit"""
+  limit: Float = 20
+
+  """Filter"""
+  name: String! = ""
+
+  """Page"""
+  page: Float = 0
+}
+
+""""""
+input FilterUserInput {
+  """Limit"""
+  limit: Float = 20
+
+  """Filter"""
+  name: String! = ""
+
+  """Page"""
+  page: Float = 0
+}
+
 type Invite {
+  acceptedAt: DateTime
   author: User
   createdAt: DateTime!
   email: String!
   id: String!
   organization: Organization!
+  rejectedAt: DateTime
   role: String!
 }
 
+type Member {
+  id: String!
+  organization: Organization!
+  role: String!
+  sessions: [Session!]!
+  user: User!
+}
+
 type Mutation {
+  acceptInvite(id: String!): Invite!
   activateUser(id: String!): User!
   blockUser(id: String!): User!
   createInvite(
@@ -94,6 +141,7 @@ type Mutation {
     input: CreateUserInput!
   ): User!
   refreshSession(refreshToken: String!): AuthType!
+  rejectInvite(id: String!): Invite!
   resetPassword(
     """Reset user password"""
     input: ResetPasswordInput!
@@ -115,8 +163,8 @@ type Organization {
   createdAt: DateTime!
   domain: String
   id: String!
-  invites: String!
-  members: String!
+  invites: [Invite!]!
+  members: [Member!]!
   name: String!
   owner: User!
   shouldAttachUsersByDomain: Boolean!
@@ -125,16 +173,37 @@ type Organization {
 }
 
 type Query {
-  getTotalOrganizations: Float!
-  getTotalUsers: Float!
+  getTotalMembers(
+    """Filtered a new client"""
+    filter: FilterMemberInput = {}
+  ): Float!
+  getTotalOrganizations(
+    """Filtered a new client"""
+    filter: FilterOrganizationInput = {}
+  ): Float!
+  getTotalUsers(
+    """Filtered a new client"""
+    filter: FilterUserInput = {}
+  ): Float!
   invite(id: String!): Invite!
+  member(id: String!): Member!
+  members(
+    """Filtered a new client"""
+    filter: FilterMemberInput = {}
+  ): [Member!]!
   organization(id: String!): Organization!
   organizationBySlug(slug: String!): Organization!
-  organizations: [Organization!]!
+  organizations(
+    """Filtered a new client"""
+    filter: FilterOrganizationInput = {}
+  ): [Organization!]!
   profile: User!
   session: Session!
   user(id: String!): User!
-  users: [User!]!
+  users(
+    """Filtered a new client"""
+    filter: FilterUserInput = {}
+  ): [User!]!
 }
 
 """"""
@@ -179,14 +248,13 @@ type User {
   createdAt: DateTime!
   email: String!
   id: String!
-  invites: String!
+  invites: [Invite!]!
   ips: String!
-  member_on: String!
+  member_on: [Member!]!
   name: String!
   owns_organizations: [Organization!]!
   passwordUpdatedAt: DateTime!
   role: String!
   sessions: [Session!]!
-  tokens: String!
   updatedAt: DateTime!
 }

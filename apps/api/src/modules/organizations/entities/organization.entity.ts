@@ -1,3 +1,5 @@
+import { Invite } from '@/modules/invites/entities/invite.entity';
+import { Member } from '@/modules/members/entities/member.entity';
 import { User } from '@/modules/users/entities/user.entity';
 import { ObjectType } from '@nestjs/graphql';
 
@@ -15,6 +17,6 @@ export class Organization {
 
   owner: User;
 
-  invites: string; // TODO: Add invites
-  members: string; // TODO: Add members
+  invites: Invite[];
+  members: Member[];
 }
