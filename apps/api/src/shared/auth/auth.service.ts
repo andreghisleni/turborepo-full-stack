@@ -1,11 +1,13 @@
+import { Session } from '@/modules/sessions/entities/session.entity';
 import { SessionsService } from '@/modules/sessions/sessions.service';
 import { UsersService } from '@/modules/users/users.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Session } from '@prisma/client';
+import { Session as PrismaSession } from '@prisma/client';
 import { compareSync } from 'bcrypt';
 import { add, isAfter } from 'date-fns';
 
+import { PrismaService } from '../database/prisma.service';
 import { CreateAuthInput } from './dto/create-auth.input';
 
 interface IGenerateSession {
@@ -14,7 +16,7 @@ interface IGenerateSession {
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService, private sessionsService: SessionsService, private jwtService: JwtService) { } // eslint-disable-line
+  constructor(private usersService: UsersService, private sessionsService: SessionsService, private jwtService: JwtService, private prisma: PrismaService) { } // eslint-disable-line
 
   async validateUser(data: CreateAuthInput) {
     // console.log('front', front);
@@ -49,7 +51,7 @@ export class AuthService {
   private async generateSession({ userId }: IGenerateSession) {
     const checkSession = await this.sessionsService.findUserSession(userId);
 
-    let session: Session;
+    let session: PrismaSession;
     if (!checkSession) {
       session = await this.sessionsService.create({
         userId,
@@ -125,4 +127,36 @@ export class AuthService {
   }
 
   // TODO: Implement validateOrganization
+
+  async validateOrganization(session: Session, slug: string) {
+    const organization = await this.prisma.organization.findUnique({
+      where: {
+        slug,
+      },
+    });
+
+    if (!organization) {
+      throw new UnauthorizedException('Organization not found');
+    }
+
+    const member = await this.prisma.member.findUnique({
+      where: {
+        organizationId_userId: {
+          organizationId: organization.id,
+          userId: session.user.id,
+        },
+      },
+    });
+
+    if (!member) {
+      throw new UnauthorizedException('User not member of organization');
+    }
+
+    const updatedSession = await this.sessionsService.update({
+      id: session.id,
+      memberId: member.id,
+    });
+
+    return updatedSession;
+  }
 }

@@ -1,6 +1,8 @@
 'use client';
 
 import { useAuth } from '@/hooks/auth';
+import Link from 'next/link';
+import { UserAvatarMenuItem } from '@/types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,13 +10,16 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { Button } from '../ui/button';
 import { Avatar } from '../avatar';
 
-export function UserNav() {
+export function UserNav({
+  USER_AVATAR_MENU_ITEMS,
+}: {
+  USER_AVATAR_MENU_ITEMS: UserAvatarMenuItem[];
+}) {
   const { user, signOut } = useAuth();
 
   return (
@@ -37,19 +42,20 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
+          {/* <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Billing</DropdownMenuItem>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem>New Team</DropdownMenuItem> */}
+
+          {USER_AVATAR_MENU_ITEMS.map(item =>
+            item.path ? (
+              <DropdownMenuItem key={item.title} asChild>
+                <Link href={item.path}>{item.title}</Link>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem key={item.title}>{item.title}</DropdownMenuItem>
+            ),
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut}>Log out</DropdownMenuItem>

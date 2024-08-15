@@ -8,9 +8,8 @@ import { usePathname } from 'next/navigation';
 import { SideNavItem } from '@/types';
 import { Icon } from '@iconify/react';
 
-import Logo from '@/assets/logo.svg';
-import Image from 'next/image';
 import { useAuth } from '@/hooks/auth';
+import { Shield } from 'lucide-react';
 
 export const SideNav = ({ SIDENAV_ITEMS }: { SIDENAV_ITEMS: SideNavItem[] }) => {
   const { user } = useAuth();
@@ -25,7 +24,9 @@ export const SideNav = ({ SIDENAV_ITEMS }: { SIDENAV_ITEMS: SideNavItem[] }) => 
           className="flex h-16 w-full flex-row items-center justify-center space-x-3 border-b border-zinc-700 dark:border-border md:justify-start md:px-6"
         >
           {/* <span className="h-12 w-12 rounded-lg bg-zinc-600 dark:bg-zinc-700" /> */}
-          <Image src={Logo} alt="Logo" className="h-12 w-12" />
+          {/* <Image src={Logo} alt="Logo" className="h-12 w-12" /> */}
+
+          <Shield className="h-12 w-12" />
           <span className="hidden text-xl font-bold text-white dark:text-inherit md:flex">
             SMG-TEC
           </span>

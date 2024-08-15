@@ -4,15 +4,19 @@ import React from 'react';
 
 import Link from 'next/link';
 import { useSelectedLayoutSegment } from 'next/navigation';
-import Logo from '@/assets/logo.svg';
 
 import { cn } from '@/lib/utils';
 import useScroll from '@/hooks/use-scroll';
-import Image from 'next/image';
+import { UserAvatarMenuItem } from '@/types';
+import { Shield } from 'lucide-react';
 import { ThemeSwitcher } from './theme-switcher';
 import { UserNav } from './user-nav';
 
-export const Header = () => {
+export const Header = ({
+  USER_AVATAR_MENU_ITEMS,
+}: {
+  USER_AVATAR_MENU_ITEMS: UserAvatarMenuItem[];
+}) => {
   const scrolled = useScroll(5);
   const selectedLayout = useSelectedLayoutSegment();
 
@@ -30,7 +34,8 @@ export const Header = () => {
         <div className="flex items-center space-x-4">
           <Link href="/" className="flex flex-row items-center justify-center space-x-3 md:hidden">
             {/* <span className="h-12 w-12 rounded-lg bg-zinc-300" /> */}
-            <Image src={Logo} alt="Logo" className="h-12 w-12" />
+            {/* <Image src={Logo} alt="Logo" className="h-12 w-12" /> */}
+            <Shield className="h-12 w-12" />
             <span className="flex text-xl font-bold ">SMG-TEC</span>
           </Link>
         </div>
@@ -40,7 +45,7 @@ export const Header = () => {
 
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-300 text-center">
             {/* <span className="text-sm font-semibold">HQ</span> */}
-            <UserNav />
+            <UserNav USER_AVATAR_MENU_ITEMS={USER_AVATAR_MENU_ITEMS} />
           </div>
         </div>
       </div>

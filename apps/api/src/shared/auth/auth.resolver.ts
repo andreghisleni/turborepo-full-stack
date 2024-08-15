@@ -28,4 +28,12 @@ export class AuthResolver {
   session(@CurrentSession() session: Session) {
     return session;
   }
+
+  @Mutation(() => Session)
+  updateSession(
+    @Args('memberId', { type: () => String }) memberId: string,
+    @CurrentSession() session: Session,
+  ) {
+    return this.authService.validateOrganization(session, memberId);
+  }
 }

@@ -1,4 +1,5 @@
 import { application } from '@full-stack/authorization';
+import { ReactNode } from 'react';
 
 export type SideNavItem = {
   title: string;
@@ -16,3 +17,9 @@ export type SideNavProps = {
 };
 
 export type ISideNav = (props: SideNavProps) => SideNavItem[];
+
+export type UserAvatarMenuItem = {
+  title: string;
+  path?: string;
+  component?: ReactNode;
+};

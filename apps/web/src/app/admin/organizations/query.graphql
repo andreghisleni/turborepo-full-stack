@@ -20,6 +20,7 @@ query getAllOrganizations ($filter: FilterOrganizationInput) {
     slug
     domain
     shouldAttachUsersByDomain
+    avatarUrl
     createdAt
     members {
       id

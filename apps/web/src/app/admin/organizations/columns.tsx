@@ -7,6 +7,7 @@ import { tdb } from '@/components/TableDataButton';
 
 import { GetAllOrganizationsQuery } from '@/generated/graphql';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -21,7 +22,17 @@ export const columns = ({ refetch }: ColumnsProps): ColumnDef<Organization>[] =>
   tdb('slug', 'Slug (url)'),
   tdb('domain', 'Domínio'),
   tdb('shouldAttachUsersByDomain', 'Anexar usuários por domínio'),
-  tdb('avatarUrl', 'Avatar'),
+  tdb('avatarUrl', 'Avatar', ({ getValue }) =>
+    getValue() ? (
+      <Image
+        src={getValue<string>()}
+        alt="Avatar"
+        className="rounded-full"
+        width={40}
+        height={40}
+      />
+    ) : null,
+  ),
   {
     id: 'owner',
     header: 'Dono',

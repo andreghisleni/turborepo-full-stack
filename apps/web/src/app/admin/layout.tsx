@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
-import { SIDENAV_ITEMS_ADMIN } from './constants';
+import { getUserServer } from '@/utils/get-user-server';
+import { SIDENAV_ITEMS_ADMIN, USER_AVATAR_MENU_ITEMS } from './constants';
 
 export default function AppLayout({
   children,
@@ -17,6 +18,11 @@ export default function AppLayout({
 }>) {
   const userRole = getCookie('user-role', { cookies });
 
+  const user = getUserServer();
+
+  if (!user) {
+    return <div>Usuário não encontrado</div>;
+  }
   if (userRole) {
     try {
       const ur = JSON.parse(userRole);
@@ -31,12 +37,14 @@ export default function AppLayout({
           },
         });
 
+        const userAvatarMenuItems = USER_AVATAR_MENU_ITEMS(user);
+
         return (
           <div className="flex">
             <SideNav SIDENAV_ITEMS={items} />
             <main className="flex-1 overflow-x-hidden">
               <MarginWidthWrapper>
-                <Header />
+                <Header USER_AVATAR_MENU_ITEMS={userAvatarMenuItems} />
                 <HeaderMobile SIDENAV_ITEMS={items} />
                 <PageWrapper>{children}</PageWrapper>
               </MarginWidthWrapper>

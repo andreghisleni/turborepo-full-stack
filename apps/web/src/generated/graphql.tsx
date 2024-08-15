@@ -133,6 +133,7 @@ export type Mutation = {
   updateAvatar: User;
   updateProfile: Organization;
   updateRole: User;
+  updateSession: Session;
 };
 
 
@@ -203,6 +204,11 @@ export type MutationUpdateProfileArgs = {
 
 export type MutationUpdateRoleArgs = {
   input: UpdateRoleInput;
+};
+
+
+export type MutationUpdateSessionArgs = {
+  memberId: Scalars['String']['input'];
 };
 
 export type Organization = {
@@ -374,7 +380,7 @@ export type GetAllOrganizationsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllOrganizationsQuery = { __typename?: 'Query', getTotalOrganizations: number, organizations: Array<{ __typename?: 'Organization', id: string, name: string, slug: string, domain?: string | null, shouldAttachUsersByDomain: boolean, createdAt: any, owner: { __typename?: 'User', id: string, name: string, email: string }, members: Array<{ __typename?: 'Member', id: string, role: string, user: { __typename?: 'User', id: string, name: string, email: string } }> }> };
+export type GetAllOrganizationsQuery = { __typename?: 'Query', getTotalOrganizations: number, organizations: Array<{ __typename?: 'Organization', id: string, name: string, slug: string, domain?: string | null, shouldAttachUsersByDomain: boolean, avatarUrl?: string | null, createdAt: any, owner: { __typename?: 'User', id: string, name: string, email: string }, members: Array<{ __typename?: 'Member', id: string, role: string, user: { __typename?: 'User', id: string, name: string, email: string } }> }> };
 
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
@@ -568,6 +574,7 @@ export const GetAllOrganizationsDocument = gql`
     slug
     domain
     shouldAttachUsersByDomain
+    avatarUrl
     createdAt
     members {
       id
