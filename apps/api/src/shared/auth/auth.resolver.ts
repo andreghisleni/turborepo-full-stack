@@ -31,9 +31,9 @@ export class AuthResolver {
 
   @Mutation(() => Session)
   updateSession(
-    @Args('memberId', { type: () => String }) memberId: string,
+    @Args('slug', { type: () => String }) slug: string,
     @CurrentSession() session: Session,
   ) {
-    return this.authService.validateOrganization(session, memberId);
+    return this.authService.validateOrganization(session, slug);
   }
 }

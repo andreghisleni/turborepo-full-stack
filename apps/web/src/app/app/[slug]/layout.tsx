@@ -24,6 +24,8 @@ export default async function AppLayout({
     redirect('/');
   }
 
+  await api.post('/auth/organization', { slug: params.slug });
+
   const cookedSlug = getCookie('slug', { cookies });
 
   if (cookedSlug !== params.slug) {

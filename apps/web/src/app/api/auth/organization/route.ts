@@ -8,9 +8,10 @@ import { client } from '@/services/apollo';
 
 const VALIDATE_ORGANIZATION = gql`
   mutation validateOrganization($slug: String!) {
-    validateOrganization(slug: $slug) {
-      member{
-      
+    updateSession(slug: $slug) {
+      member {
+        id
+        role
       }
     }
   }
@@ -20,74 +21,34 @@ export async function POST(request: NextRequest) {
   const req = await request.json();
 
   try {
-    const { refreshToken: rt } = z
+    const { slug } = z
       .object({
-        refreshToken: z.string(),
+        slug: z.string(),
       })
       .parse(req);
 
     const refreshResolverResponse = await client.mutate<{
-      refreshSession: {
-        token: string;
-        refreshToken: string;
-        session: {
-          user: {
-            id: string;
-            name: string;
-            email: string;
-            role: string;
-            member_on: {
-              id: string;
-              organization: {
-                id: string;
-                slug: string;
-              };
-            }[];
-          };
+      updateSession: {
+        member: {
+          id: string;
+          role: string;
         };
       };
     }>({
-      mutation: REFRESH_TOKEN,
-      variables: { refreshToken: rt },
+      mutation: VALIDATE_ORGANIZATION,
+      variables: { slug },
     });
 
-    const token = refreshResolverResponse.data?.refreshSession.token;
-    const refreshTokenNew = refreshResolverResponse.data?.refreshSession.refreshToken;
-
-    if (!token || !refreshTokenNew) {
-      throw new Error('Empty token or refreshToken');
-    }
-
-    setCookie('token', token, {
+    setCookie('member-role', JSON.stringify(refreshResolverResponse.data?.updateSession.member), {
       cookies,
     });
 
-    setCookie('refreshToken', refreshTokenNew, {
-      cookies,
-    });
-
-    setCookie(
-      'user-role',
-      JSON.stringify(refreshResolverResponse.data?.refreshSession.session.user),
-      {
-        cookies,
-      },
+    return NextResponse.json(
+      { member: refreshResolverResponse.data?.updateSession.member },
+      { status: 201 },
     );
-    setCookie('user', JSON.stringify(refreshResolverResponse.data?.refreshSession.session.user), {
-      cookies,
-    });
-    return NextResponse.json({ token }, { status: 201 });
   } catch (error: any) {
-    deleteCookie('token', {
-      cookies,
-    });
-    deleteCookie('refreshToken', {
-      cookies,
-    });
-    deleteCookie('user', {
-      cookies,
-    });
-    deleteCookie('user-role', {
+    deleteCookie('member-role', {
       cookies,
     });
     return new Response(error, { status: 400 });

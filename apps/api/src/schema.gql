@@ -156,7 +156,7 @@ type Mutation {
     """Update user role"""
     input: UpdateRoleInput!
   ): User!
-  updateSession(memberId: String!): Session!
+  updateSession(slug: String!): Session!
 }
 
 type Organization {
@@ -216,7 +216,7 @@ input ResetPasswordInput {
 type Session {
   createdAt: DateTime!
   id: String!
-  member: String!
+  member: Member!
   updatedAt: DateTime!
   user: User!
 }

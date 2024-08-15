@@ -208,7 +208,7 @@ export type MutationUpdateRoleArgs = {
 
 
 export type MutationUpdateSessionArgs = {
-  memberId: Scalars['String']['input'];
+  slug: Scalars['String']['input'];
 };
 
 export type Organization = {
@@ -307,7 +307,7 @@ export type Session = {
   __typename?: 'Session';
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['String']['output'];
-  member: Scalars['String']['output'];
+  member: Member;
   updatedAt: Scalars['DateTime']['output'];
   user: User;
 };
