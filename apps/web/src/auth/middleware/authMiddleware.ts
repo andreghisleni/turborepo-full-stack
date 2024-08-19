@@ -2,6 +2,7 @@ import type { NextFetchEvent, NextMiddleware, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import jwt from 'jsonwebtoken';
+import { env } from '@/env';
 import { setHeader, stringifyHeaders } from './response';
 
 import { createRouteMatcher } from './routeMatcher';
@@ -69,11 +70,12 @@ const authMiddleware: AuthMiddleware = (...args: unknown[]) => {
     const token = getCookie(_req, 'token');
 
     const rt = getCookie(_req, 'refreshToken');
+    const lastUrl = env.NEXT_PUBLIC_VERCEL_URL.concat(_req.nextUrl.pathname);
 
     // if don't have token or refresh token, redirect to sign-in
     if (!token || !rt) {
       logger.debug('No token or refresh token found');
-      return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
+      return NextResponse.redirect(new URL(`/auth/sign-in?callback=${lastUrl}`, lastUrl));
     }
 
     const tokenPayload = jwt.decode(token);
@@ -81,12 +83,12 @@ const authMiddleware: AuthMiddleware = (...args: unknown[]) => {
 
     if (!tokenPayload || !refreshTokenPayload) {
       logger.debug('No token or refresh token found');
-      return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
+      return NextResponse.redirect(new URL(`/auth/sign-in?callback=${lastUrl}`, lastUrl));
     }
 
     if (typeof tokenPayload === 'string' || typeof refreshTokenPayload === 'string') {
       logger.debug('Token or refresh token are invalid');
-      return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
+      return NextResponse.redirect(new URL(`/auth/sign-in?callback=${lastUrl}`, lastUrl));
     }
 
     const tokenPayloadType = tokenPayload as {
@@ -103,7 +105,7 @@ const authMiddleware: AuthMiddleware = (...args: unknown[]) => {
       refreshTokenPayloadType.exp - Date.now() / 1000 <= 0
     ) {
       logger.debug('Token and refresh token are expired');
-      return NextResponse.redirect(new URL('/auth/sign-in', _req.nextUrl.href));
+      return NextResponse.redirect(new URL(`/auth/sign-in?callback=${lastUrl}`, lastUrl));
     }
 
     // if token is expired but refresh token is not, refresh token

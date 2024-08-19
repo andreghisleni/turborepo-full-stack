@@ -1,4 +1,4 @@
-import { application } from '@full-stack/authorization';
+import { application, organization } from '@full-stack/authorization';
 import { ReactNode } from 'react';
 
 export type SideNavItem = {
@@ -14,6 +14,10 @@ export type SideNavItem = {
 
 export type SideNavProps = {
   app: { user: application.User };
+};
+export type SideNavPropsApp = {
+  app: { user: application.User };
+  org: { user: organization.User };
 };
 
 export type ISideNav = (props: SideNavProps) => SideNavItem[];

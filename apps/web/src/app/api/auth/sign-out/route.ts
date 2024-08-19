@@ -20,6 +20,13 @@ export async function GET(_request: NextRequest) {
       cookies,
     });
 
+    deleteCookie('member-role', {
+      cookies,
+    });
+    deleteCookie('organization', {
+      cookies,
+    });
+
     return NextResponse.redirect(new URL('/auth/sign-in', _request.nextUrl.href));
   } catch (error: any) {
     return new Response(error.message, { status: 400 });

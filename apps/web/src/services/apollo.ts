@@ -17,7 +17,7 @@ const authLink = setContext(async (_, { headers }) => {
       cookies,
     });
 
-    // console.log("token", token);
+    // console.log('token', token);
 
     return {
       headers: {

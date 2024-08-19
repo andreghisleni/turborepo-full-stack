@@ -12,6 +12,8 @@ export type UserServer = {
     organization: {
       id: string;
       slug: string;
+      avatarUrl: string;
+      name: string;
     };
   }[];
 };
@@ -24,6 +26,28 @@ export function getUserServer() {
   }
   try {
     const session = JSON.parse(user) as UserServer;
+
+    return session;
+  } catch (error) {
+    return undefined;
+  }
+}
+
+export type OrganizationServer = {
+  id: string;
+  name: string;
+  slug: string;
+  avatarUrl: string;
+};
+
+export function getOrganizationServer() {
+  const organization = getCookie('organization', { cookies });
+
+  if (!organization) {
+    return undefined;
+  }
+  try {
+    const session = JSON.parse(organization) as OrganizationServer;
 
     return session;
   } catch (error) {

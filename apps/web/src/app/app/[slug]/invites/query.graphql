@@ -1,0 +1,23 @@
+query getAllInvites($filter: FilterInput) {
+  invites (filter: $filter) {
+    id
+    email
+    role
+    createdAt
+    author{
+      name
+      email
+    }
+    acceptedAt
+    rejectedAt
+  }
+  getTotalInvites(filter: $filter)
+}
+
+mutation createInvite($input: CreateInviteInput!) {
+  createInvite(input: $input) {
+    id
+    role
+    createdAt
+  }
+}

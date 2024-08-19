@@ -2,6 +2,7 @@ import { Session } from '@/modules/sessions/entities/session.entity';
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { ZodArgs } from 'nestjs-graphql-zod';
 
+import { CheckPoliciesApp } from '../casl/policies.types';
 import { CurrentSession } from './auth.guard';
 import { AuthService } from './auth.service';
 import { AuthType } from './dto/auth.type';
@@ -24,11 +25,13 @@ export class AuthResolver {
     return this.authService.refresh(refreshToken);
   }
 
+  @CheckPoliciesApp(a => a.can('get', 'Session'))
   @Query(() => Session)
   session(@CurrentSession() session: Session) {
     return session;
   }
 
+  @CheckPoliciesApp(a => a.can('update', 'Session'))
   @Mutation(() => Session)
   updateSession(
     @Args('slug', { type: () => String }) slug: string,

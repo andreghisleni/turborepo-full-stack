@@ -16,4 +16,6 @@ export class Member {
   user: User;
 
   sessions: Session[];
+
+  createdAt: Date;
 }

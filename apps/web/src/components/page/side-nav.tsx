@@ -10,8 +10,16 @@ import { Icon } from '@iconify/react';
 
 import { useAuth } from '@/hooks/auth';
 import { Shield } from 'lucide-react';
+import type { OrganizationServer } from '@/utils/get-server';
+import Image from 'next/image';
 
-export const SideNav = ({ SIDENAV_ITEMS }: { SIDENAV_ITEMS: SideNavItem[] }) => {
+export const SideNav = ({
+  SIDENAV_ITEMS,
+  organization,
+}: {
+  SIDENAV_ITEMS: SideNavItem[];
+  organization?: OrganizationServer;
+}) => {
   const { user } = useAuth();
 
   const itens = SIDENAV_ITEMS;
@@ -26,9 +34,24 @@ export const SideNav = ({ SIDENAV_ITEMS }: { SIDENAV_ITEMS: SideNavItem[] }) => 
           {/* <span className="h-12 w-12 rounded-lg bg-zinc-600 dark:bg-zinc-700" /> */}
           {/* <Image src={Logo} alt="Logo" className="h-12 w-12" /> */}
 
-          <Shield className="h-12 w-12" />
-          <span className="hidden text-xl font-bold text-white dark:text-inherit md:flex">
-            SMG-TEC
+          {organization ? (
+            organization?.avatarUrl ? (
+              <Image
+                src={organization.avatarUrl}
+                alt="Logo"
+                className="h-12 w-12"
+                width={48}
+                height={48}
+              />
+            ) : (
+              <span className="h-12 w-12 rounded-lg bg-zinc-600 dark:bg-zinc-700" />
+            )
+          ) : (
+            <Shield className="h-12 w-12" />
+          )}
+
+          <span className="hidden truncate text-xl font-bold text-white dark:text-inherit md:flex">
+            {organization ? organization?.name || 'Full-Stack' : 'Admin'}
           </span>
         </Link>
 

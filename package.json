@@ -12,7 +12,7 @@
     "prisma:s": "turbo run prisma:s --"
   },
   "devDependencies": {
-    "turbo": "2.0.12"
+    "turbo": "2.0.14"
   },
   "packageManager": "pnpm@9.1.1",
   "engines": {

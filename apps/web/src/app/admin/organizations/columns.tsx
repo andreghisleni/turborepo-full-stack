@@ -21,7 +21,7 @@ export const columns = ({ refetch }: ColumnsProps): ColumnDef<Organization>[] =>
   tdb('name', 'Nome'),
   tdb('slug', 'Slug (url)'),
   tdb('domain', 'Domínio'),
-  tdb('shouldAttachUsersByDomain', 'Anexar usuários por domínio'),
+  tdb('shouldAttachUsersByDomain', 'Anexar'),
   tdb('avatarUrl', 'Avatar', ({ getValue }) =>
     getValue() ? (
       <Image
@@ -37,7 +37,7 @@ export const columns = ({ refetch }: ColumnsProps): ColumnDef<Organization>[] =>
     id: 'owner',
     header: 'Dono',
     cell: ({ row }) => (
-      <div>
+      <div className="flex flex-col">
         <span>{row.original.owner.name}</span>
         <span>{row.original.owner.email}</span>
       </div>

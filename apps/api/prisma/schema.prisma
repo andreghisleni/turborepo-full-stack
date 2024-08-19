@@ -111,6 +111,8 @@ model Member {
 
   sessions Session[]
 
+  createdAt DateTime @default(now()) @map("created_at")
+
   @@unique([organizationId, userId])
   @@map("members")
 }

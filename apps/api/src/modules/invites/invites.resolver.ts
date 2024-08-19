@@ -1,3 +1,4 @@
+import { FilterInput, FilterSchema } from '@/filter-input';
 import { CurrentSession } from '@/shared/auth/auth.guard';
 import { CheckPoliciesApp, CheckPoliciesOrg } from '@/shared/casl/policies.types';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
@@ -20,15 +21,43 @@ export class InvitesResolver {
       description: 'Create a new invite',
     })
     input: CreateInviteInput,
-    @CurrentSession() { user, member }: Session,
+    @CurrentSession() { user, organization }: Session,
   ) {
-    return this.invitesService.create(input, (member as any).organization.id, user.id);
+    return this.invitesService.create(input, organization.id, user.id);
+  }
+
+  @CheckPoliciesOrg(a => a.can('get', 'Invite'))
+  @Query(() => [Invite], { name: 'invites' })
+  findAll(
+    @ZodArgs(FilterSchema, 'filter', {
+      name: 'FilterInput',
+      nullable: true,
+      defaultValue: {},
+    })
+    filter: FilterInput,
+    @CurrentSession() { organization }: Session,
+  ) {
+    return this.invitesService.findAll(filter, organization.id);
+  }
+
+  @CheckPoliciesOrg(a => a.can('get', 'Invite'))
+  @Query(() => Number)
+  getTotalInvites(
+    @ZodArgs(FilterSchema, 'filter', {
+      name: 'FilterInput',
+      nullable: true,
+      defaultValue: {},
+    })
+    filter: FilterInput,
+    @CurrentSession() { organization }: Session,
+  ) {
+    return this.invitesService.findTotal(filter, organization.id);
   }
 
   @CheckPoliciesApp(a => a.can('get', 'Invite'))
   @Query(() => Invite, { name: 'invite' })
-  findById(@Args('id', { type: () => String }) id: string) {
-    return this.invitesService.findById(id);
+  findById(@Args('id', { type: () => String }) id: string, @CurrentSession() { user }: Session) {
+    return this.invitesService.findById(id, user.email);
   }
 
   @ResolveField()

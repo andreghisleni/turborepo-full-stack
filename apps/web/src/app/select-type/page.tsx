@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getUserServer } from '@/utils/get-user-server';
+import { getUserServer } from '@/utils/get-server';
 import { Building2, ShieldOff } from 'lucide-react';
 import { Metadata } from 'next';
 import { unstable_noStore } from 'next/cache';

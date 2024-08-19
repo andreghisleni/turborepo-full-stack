@@ -16,13 +16,33 @@ import { UpdateUserInput } from './dto/update-user.input';
 export class UsersService {
   constructor(private prisma: PrismaService, private readonly mailService: MailService, private readonly env: EnvService) { } // eslint-disable-line
 
-  async create({ password, ...createUserInput }: CreateUserInput) {
+  async create({ password, inviteId, ...createUserInput }: CreateUserInput) {
     const userExists = await this.prisma.user.findUnique({
       where: { email: createUserInput.email },
     });
 
     if (userExists) {
       throw new GraphQLError('User already exists', {
+        extensions: {
+          code: 401,
+        },
+      });
+    }
+
+    const findInvite = await this.prisma.invite.findUnique({
+      where: { id: inviteId },
+    });
+
+    if (inviteId && !findInvite) {
+      throw new GraphQLError('Invite not found', {
+        extensions: {
+          code: 401,
+        },
+      });
+    }
+
+    if (createUserInput.email !== findInvite?.email) {
+      throw new GraphQLError('Invite email does not match', {
         extensions: {
           code: 401,
         },
@@ -38,6 +58,21 @@ export class UsersService {
         passwordHash: hashedPassword,
         activatedAt: totalUsers === 0 ? new Date() : null,
         role: totalUsers === 0 ? 'ADMIN' : 'DEFAULT',
+      },
+    });
+
+    await this.prisma.member.create({
+      data: {
+        role: findInvite?.role,
+        organizationId: findInvite?.organizationId,
+        userId: user.id,
+      },
+    });
+
+    await this.prisma.invite.update({
+      where: { id: inviteId },
+      data: {
+        acceptedAt: new Date(),
       },
     });
 

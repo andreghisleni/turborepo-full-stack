@@ -28,6 +28,7 @@ export const permissions: Record<Role, PermissionsByRole> = {
   },
   DEFAULT(user, { can }) {
     can(['get'], 'User');
+    can(['get', 'update'], 'Session');
 
     can(['update'], 'User', {
       id: { $eq: user.id },

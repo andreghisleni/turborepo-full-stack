@@ -1,0 +1,20 @@
+query getAllMembers($filter: FilterMemberInput) {
+  members (filter: $filter) {
+    id
+    role
+    user {
+      id
+      email
+      name
+    }
+    createdAt
+  }
+  getTotalMembers(filter: $filter)
+}
+
+mutation updateMemberRole($input: UpdateMemberRoleInput!) {
+  updateMemberRole(input: $input) {
+    id
+    role    
+  }
+}

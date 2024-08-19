@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
-import { getUserServer } from '@/utils/get-user-server';
+import { getUserServer } from '@/utils/get-server';
 import { SIDENAV_ITEMS_ADMIN, USER_AVATAR_MENU_ITEMS } from './constants';
 
 export default function AppLayout({

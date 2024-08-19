@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 
 import { application } from '@full-stack/authorization';
 import { SideNavItem, SideNavProps, UserAvatarMenuItem } from '@/types';
-import { UserServer } from '@/utils/get-user-server';
+import { UserServer } from '@/utils/get-server';
 
 export const SIDENAV_ITEMS_ADMIN = ({ app: { user } }: SideNavProps): SideNavItem[] => {
   const ability = application.defineAbilityFor(user);

@@ -1,8 +1,11 @@
+import { CurrentSession } from '@/shared/auth/auth.guard';
 import { CheckPoliciesOrg } from '@/shared/casl/policies.types';
-import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ZodArgs } from 'nestjs-graphql-zod';
 
+import { Session } from '../sessions/entities/session.entity';
 import { FilterMemberInput, FilterMemberSchema } from './dto/filter-input';
+import { UpdateMemberRoleInput, UpdateMemberRoleSchema } from './dto/update-role.input';
 import { Member } from './entities/member.entity';
 import { MembersService } from './members.service';
 
@@ -20,8 +23,9 @@ export class MembersResolver {
       defaultValue: {},
     })
     filter: FilterMemberInput,
+    @CurrentSession() { organization }: Session,
   ) {
-    return this.membersService.findAll(filter);
+    return this.membersService.findAll(filter, organization.id);
   }
 
   @CheckPoliciesOrg(a => a.can('get', 'Member'))
@@ -34,14 +38,28 @@ export class MembersResolver {
       defaultValue: {},
     })
     filter: FilterMemberInput,
+    @CurrentSession() { organization }: Session,
   ) {
-    return this.membersService.findTotalMembers(filter);
+    return this.membersService.findTotalMembers(filter, organization.id);
   }
 
   @CheckPoliciesOrg(a => a.can('get', 'Member'))
   @Query(() => Member, { name: 'member' })
   findById(@Args('id', { type: () => String }) id: string) {
     return this.membersService.findById(id);
+  }
+
+  @CheckPoliciesOrg(a => a.can('update-role', 'Member'))
+  @Mutation(() => Member)
+  updateMemberRole(
+    @ZodArgs(UpdateMemberRoleSchema, 'input', {
+      name: 'UpdateMemberRoleInput',
+      description: 'Update user role',
+    })
+    input: UpdateMemberRoleInput,
+    @CurrentSession() { user }: Session,
+  ) {
+    return this.membersService.updateRole(input, user.id);
   }
 
   @ResolveField()

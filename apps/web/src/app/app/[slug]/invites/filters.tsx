@@ -1,7 +1,7 @@
 'use client';
 
 import { Filter, Loader2, X } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState, useTransition } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -11,21 +11,23 @@ import { Separator } from '@/components/ui/separator';
 export function Filters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const [isPendingFilterTransition, startTransition] = useTransition();
 
-  const [nameFilter, setNameFilter] = useState(searchParams.get('nameFilter') ?? '');
+  const [filterFilter, setNameFilter] = useState(searchParams.get('filterFilter') ?? '');
 
   function handleFilter(event: FormEvent) {
     event.preventDefault();
 
     const params = new URLSearchParams(searchParams);
 
-    params.set('nameFilter', nameFilter);
+    params.set('filterFilter', filterFilter);
 
     params.set('pageIndex', '0');
 
     startTransition(() => {
-      router.push(`/controllers?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`);
     });
   }
 
@@ -34,17 +36,17 @@ export function Filters() {
 
     const params = new URLSearchParams(searchParams);
 
-    params.delete('nameFilter');
+    params.delete('filterFilter');
 
-    router.push(`/controllers?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
-  const hasFilters = nameFilter !== '';
+  const hasFilters = filterFilter !== '';
 
   return (
     <form onSubmit={handleFilter} className="flex items-center gap-2">
       <Input
-        value={nameFilter}
+        value={filterFilter}
         onChange={e => setNameFilter(e.target.value)}
         placeholder="Filter..."
         className="h-8 w-auto"

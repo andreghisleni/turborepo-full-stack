@@ -22,16 +22,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     const session = await this.sessionsService.findById(payload.sub);
 
-    if (!session) throw new UnauthorizedException('Unauthorized');
+    if (!session) throw new UnauthorizedException('Unauthorized here');
 
     const user = await this.sessionsService.user(session.id);
 
     if (session.memberId) {
-      const member = await this.sessionsService.member(session.memberId);
+      const member = await this.sessionsService.member(session.id);
+      const organization = await this.sessionsService.organization(session.id);
+
       return {
         ...session,
         user,
         member,
+        organization,
       };
     }
 

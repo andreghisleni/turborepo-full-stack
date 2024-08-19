@@ -1,12 +1,12 @@
 'use client';
 
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 
 import { DataTable } from '@/components/data-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useGetAllControllersQuery } from '@/generated/graphql';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useGetAllMembersQuery } from '@/generated/graphql';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Pagination } from '@/components/pagination';
 import { calculateTotalPages } from '@/utils/calculate-total-pages';
 import { columns } from './columns';
@@ -18,8 +18,8 @@ type Props = {
   nameFilter: string;
 };
 
-export function ControllersTable({ pageIndex, pageSize, nameFilter }: Props) {
-  const { data, refetch } = useGetAllControllersQuery({
+export function UsersTable({ pageIndex, pageSize, nameFilter }: Props) {
+  const { data, refetch } = useGetAllMembersQuery({
     variables: {
       filter: {
         name: nameFilter,
@@ -27,50 +27,38 @@ export function ControllersTable({ pageIndex, pageSize, nameFilter }: Props) {
         limit: pageSize,
       },
     },
-    refetchWritePolicy: 'overwrite',
   });
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   function navigateToPage(p: number) {
     const params = new URLSearchParams(searchParams.toString());
     params.set('pageIndex', String(p));
 
-    router.push(`/controllers?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
   function setPageSize(l: string) {
     const params = new URLSearchParams(searchParams.toString());
     params.set('pageSize', l);
     params.set('pageIndex', '0');
-    router.push(`/controllers?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
-  const total = data?.getTotalControllers || 0;
+  const total = data?.getTotalMembers || 0;
 
   const { totalPages, lastPageSize } = calculateTotalPages(total, pageSize);
-
-  useEffect(() => {
-    refetch();
-
-    const looping = setInterval(() => {
-      refetch();
-    }, 20 * 1000);
-
-    return () => {
-      looping && clearInterval(looping);
-    };
-  }, [refetch]);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Controladoras</CardTitle>
+        <CardTitle>Membros</CardTitle>
       </CardHeader>
       <CardContent>
         <DataTable
           columns={columns({ refetch })}
-          data={data?.controllers || []}
+          data={data?.members || []}
           filterComponent={<Filters />}
           ifJustFilterComponent
         />
@@ -81,7 +69,7 @@ export function ControllersTable({ pageIndex, pageSize, nameFilter }: Props) {
               page: pageIndex,
               pages: totalPages,
               limit: pageSize,
-              showing: data?.controllers.length || 0,
+              showing: data?.members.length || 0,
               handleUpdatePage: p => {
                 navigateToPage(p);
               },
@@ -91,20 +79,6 @@ export function ControllersTable({ pageIndex, pageSize, nameFilter }: Props) {
             }}
           />
         </Suspense>
-        {/* <ShowJson
-          data={{
-            items: total || 0,
-            page: pageIndex,
-            pages: totalPages,
-            p: (total || 0) / pageSize,
-            limit: pageSize,
-            showing: data?.controllers.length || 0,
-
-            lastPageSize,
-
-            data,
-          }}
-        /> */}
       </CardContent>
     </Card>
   );

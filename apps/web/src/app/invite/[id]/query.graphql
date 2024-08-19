@@ -1,0 +1,26 @@
+query getMyInvite($id: String!) {
+  invite(id: $id) {
+    id
+    author {
+      name
+    }
+    organization{
+      name
+      slug
+    }
+    acceptedAt
+    rejectedAt
+  }
+}
+
+mutation acceptInvite($id: String!) {
+  acceptInvite(id: $id) {
+    id
+  }
+}
+
+mutation rejectInvite($id: String!) {
+  rejectInvite(id: $id) {
+    id
+  }
+}

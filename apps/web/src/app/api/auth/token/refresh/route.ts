@@ -22,6 +22,8 @@ const REFRESH_TOKEN = gql`
             organization {
               id
               slug
+              avatarUrl
+              name
             }
           }
         }
@@ -55,6 +57,8 @@ export async function POST(request: NextRequest) {
               organization: {
                 id: string;
                 slug: string;
+                avatarUrl: string;
+                name: string;
               };
             }[];
           };

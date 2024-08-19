@@ -1,7 +1,7 @@
 'use client';
 
 import { Filter, Loader2, X } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState, useTransition } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 export function Filters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [isPendingFilterTransition, startTransition] = useTransition();
 
   const [nameFilter, setNameFilter] = useState(searchParams.get('nameFilter') ?? '');
@@ -25,7 +26,7 @@ export function Filters() {
     params.set('pageIndex', '0');
 
     startTransition(() => {
-      router.push(`/users?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`);
     });
   }
 
@@ -36,7 +37,7 @@ export function Filters() {
 
     params.delete('nameFilter');
 
-    router.push(`/users?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   }
 
   const hasFilters = nameFilter !== '';

@@ -1,3 +1,4 @@
+import { FilterInput } from '@/filter-input';
 import { PrismaService } from '@/shared/database/prisma.service';
 import { EnvService } from '@/shared/env/env.service';
 import { MailTemplate } from '@/shared/mail/mail.interface';
@@ -88,8 +89,8 @@ export class InvitesService {
           author: {
             name: author.name,
           },
-          accept_invite_url: `${this.env.get('API_URL')}/invite/${invite.id}`,
-          create_account_accept_invite_url: `${this.env.get('API_URL')}/auth/register?invite=${invite.id}`,
+          accept_invite_url: `${this.env.get('WEB_URL')}/invite/${invite.id}`,
+          create_account_accept_invite_url: `${this.env.get('WEB_URL')}/auth/register?invite=${invite.id}&email=${invite.email}`,
         },
       },
     });
@@ -97,9 +98,43 @@ export class InvitesService {
     return invite;
   }
 
-  async findById(id: string) {
+  async findAll(filter: FilterInput, organizationId: string) {
+    return this.prisma.invite.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      skip: filter.page * filter.limit,
+      take: filter.limit,
+      where: {
+        email: {
+          contains: filter.filter,
+          mode: 'insensitive',
+        },
+
+        organizationId,
+      },
+    });
+  }
+
+  async findTotal(filter: FilterInput, organizationId: string) {
+    return this.prisma.invite.count({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        email: {
+          contains: filter.filter,
+          mode: 'insensitive',
+        },
+
+        organizationId,
+      },
+    });
+  }
+
+  async findById(id: string, email: string) {
     return this.prisma.invite.findUnique({
-      where: { id },
+      where: { id, email },
     });
   }
 

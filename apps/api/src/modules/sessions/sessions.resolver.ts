@@ -16,4 +16,9 @@ export class SessionsResolver {
   member(@Parent() { id }: Session) {
     return this.sessionsService.member(id);
   }
+
+  @ResolveField()
+  organization(@Parent() { id }: Session) {
+    return this.sessionsService.organization(id);
+  }
 }

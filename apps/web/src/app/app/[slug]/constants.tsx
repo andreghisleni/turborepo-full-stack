@@ -1,39 +1,53 @@
 import { Icon } from '@iconify/react';
 
-import { application } from '@full-stack/authorization';
-import { SideNavItem, SideNavProps, UserAvatarMenuItem } from '@/types';
-import { UserServer } from '@/utils/get-user-server';
+import { organization } from '@full-stack/authorization';
+import { SideNavItem, SideNavPropsApp, UserAvatarMenuItem } from '@/types';
+import { UserServer } from '@/utils/get-server';
 
-export const SIDENAV_ITEMS_ADMIN = ({ app: { user } }: SideNavProps): SideNavItem[] => {
-  const ability = application.defineAbilityFor(user);
+export const SIDENAV_ITEMS_ADMIN = ({
+  org: { user: organizationUser },
+  slug,
+}: SideNavPropsApp & { slug: string }): SideNavItem[] => {
+  const ability = organization.defineAbilityFor(organizationUser);
 
   return [
     {
       title: 'Home',
-      path: '/admin',
+      path: `/app/${slug}`,
       icon: <Icon icon="lucide:home" width="24" height="24" />,
       exact: true,
       show: true,
     },
     {
-      title: 'Usuários',
-      path: '/admin/users',
+      title: 'Membros',
+      path: `/app/${slug}/members`,
       icon: <Icon icon="lucide:users" width="24" height="24" />,
-      show: ability.can('get', 'User'),
+      show: ability.can('get', 'Member'),
     },
     {
-      title: 'Organizações',
-      path: '/admin/organizations',
-      icon: <Icon icon="lucide:building-2" width="24" height="24" />,
-      show: ability.can('get', 'User'),
+      title: 'Convites',
+      path: `/app/${slug}/invites`,
+      icon: <Icon icon="lucide:users" width="24" height="24" />,
+      show: ability.can('get', 'Invite'),
     },
   ];
 };
 
-export const USER_AVATAR_MENU_ITEMS = ({ member_on }: UserServer): UserAvatarMenuItem[] => [
-  {
-    title: member_on.length === 1 ? 'Acessar organização' : 'Selecionar organização',
-    path:
-      member_on.length === 1 ? `/app/${member_on[0].organization.slug}` : '/select-organization',
-  },
+export const USER_AVATAR_MENU_ITEMS = ({ member_on, role }: UserServer): UserAvatarMenuItem[] => [
+  ...(member_on.length > 1
+    ? [
+        {
+          title: 'Selecionar organização',
+          path: '/select-organization',
+        },
+      ]
+    : []),
+  ...(role === 'ADMIN'
+    ? [
+        {
+          title: 'Painel Administrativo',
+          path: '/admin',
+        },
+      ]
+    : []),
 ];

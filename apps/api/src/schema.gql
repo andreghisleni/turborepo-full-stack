@@ -56,6 +56,9 @@ input CreateUserInput {
   """The email of the user"""
   email: String!
 
+  """The invite id of the user"""
+  inviteId: String
+
   """The name of the user"""
   name: String!
 
@@ -67,6 +70,18 @@ input CreateUserInput {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+""""""
+input FilterInput {
+  """Filter"""
+  filter: String! = ""
+
+  """Limit"""
+  limit: Float = 20
+
+  """Page"""
+  page: Float = 0
+}
 
 """"""
 input FilterMemberInput {
@@ -116,6 +131,7 @@ type Invite {
 }
 
 type Member {
+  createdAt: DateTime!
   id: String!
   organization: Organization!
   role: String!
@@ -148,6 +164,10 @@ type Mutation {
   ): Boolean!
   sendForgotPasswordEmail(email: String!): Boolean!
   updateAvatar(avatar: String!): User!
+  updateMemberRole(
+    """Update user role"""
+    input: UpdateMemberRoleInput!
+  ): Member!
   updateProfile(
     """Create a new organization"""
     input: UpdateOrganizationInput!
@@ -174,6 +194,7 @@ type Organization {
 }
 
 type Query {
+  getTotalInvites(filter: FilterInput = {}): Float!
   getTotalMembers(
     """Filtered a new client"""
     filter: FilterMemberInput = {}
@@ -187,6 +208,7 @@ type Query {
     filter: FilterUserInput = {}
   ): Float!
   invite(id: String!): Invite!
+  invites(filter: FilterInput = {}): [Invite!]!
   member(id: String!): Member!
   members(
     """Filtered a new client"""
@@ -217,8 +239,22 @@ type Session {
   createdAt: DateTime!
   id: String!
   member: Member!
+  organization: Organization!
   updatedAt: DateTime!
   user: User!
+}
+
+""""""
+input UpdateMemberRoleInput {
+  memberId: String!
+  role: UpdateMemberRoleInput_RoleEnum_0!
+}
+
+"""Enum values for UpdateMemberRoleInput.role"""
+enum UpdateMemberRoleInput_RoleEnum_0 {
+  ADMIN
+  BILLING
+  MEMBER
 }
 
 """"""

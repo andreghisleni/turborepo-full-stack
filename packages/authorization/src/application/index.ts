@@ -5,6 +5,7 @@ import { User } from './models/user';
 import { permissions } from './permissions';
 import { inviteSubject } from './subjects/invite';
 import { organizationSubject } from './subjects/organization';
+import { sessionSubject } from './subjects/session';
 import { userSubject } from './subjects/user';
 
 export * from './models/user';
@@ -14,6 +15,7 @@ const appAbilitiesSchema = z.union([
   userSubject,
   organizationSubject,
   inviteSubject,
+  sessionSubject,
   z.tuple([z.literal('manage'), z.literal('all')]),
 ]);
 

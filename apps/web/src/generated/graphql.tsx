@@ -63,10 +63,21 @@ export type CreateOrganizationInput = {
 export type CreateUserInput = {
   /** The email of the user */
   email: Scalars['String']['input'];
+  /** The invite id of the user */
+  inviteId?: InputMaybe<Scalars['String']['input']>;
   /** The name of the user */
   name: Scalars['String']['input'];
   /** The password of the user */
   password: Scalars['String']['input'];
+};
+
+export type FilterInput = {
+  /** Filter */
+  filter?: Scalars['String']['input'];
+  /** Limit */
+  limit?: InputMaybe<Scalars['Float']['input']>;
+  /** Page */
+  page?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type FilterMemberInput = {
@@ -110,6 +121,7 @@ export type Invite = {
 
 export type Member = {
   __typename?: 'Member';
+  createdAt: Scalars['DateTime']['output'];
   id: Scalars['String']['output'];
   organization: Organization;
   role: Scalars['String']['output'];
@@ -131,6 +143,7 @@ export type Mutation = {
   resetPassword: Scalars['Boolean']['output'];
   sendForgotPasswordEmail: Scalars['Boolean']['output'];
   updateAvatar: User;
+  updateMemberRole: Member;
   updateProfile: Organization;
   updateRole: User;
   updateSession: Session;
@@ -197,6 +210,11 @@ export type MutationUpdateAvatarArgs = {
 };
 
 
+export type MutationUpdateMemberRoleArgs = {
+  input: UpdateMemberRoleInput;
+};
+
+
 export type MutationUpdateProfileArgs = {
   input: UpdateOrganizationInput;
 };
@@ -228,10 +246,12 @@ export type Organization = {
 
 export type Query = {
   __typename?: 'Query';
+  getTotalInvites: Scalars['Float']['output'];
   getTotalMembers: Scalars['Float']['output'];
   getTotalOrganizations: Scalars['Float']['output'];
   getTotalUsers: Scalars['Float']['output'];
   invite: Invite;
+  invites: Array<Invite>;
   member: Member;
   members: Array<Member>;
   organization: Organization;
@@ -241,6 +261,11 @@ export type Query = {
   session: Session;
   user: User;
   users: Array<User>;
+};
+
+
+export type QueryGetTotalInvitesArgs = {
+  filter?: InputMaybe<FilterInput>;
 };
 
 
@@ -261,6 +286,11 @@ export type QueryGetTotalUsersArgs = {
 
 export type QueryInviteArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryInvitesArgs = {
+  filter?: InputMaybe<FilterInput>;
 };
 
 
@@ -308,9 +338,22 @@ export type Session = {
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['String']['output'];
   member: Member;
+  organization: Organization;
   updatedAt: Scalars['DateTime']['output'];
   user: User;
 };
+
+export type UpdateMemberRoleInput = {
+  memberId: Scalars['String']['input'];
+  role: UpdateMemberRoleInput_RoleEnum_0;
+};
+
+/** Enum values for UpdateMemberRoleInput.role */
+export enum UpdateMemberRoleInput_RoleEnum_0 {
+  Admin = 'ADMIN',
+  Billing = 'BILLING',
+  Member = 'MEMBER'
+}
 
 export type UpdateOrganizationInput = {
   /** The id of the organization */
@@ -416,6 +459,55 @@ export type UpdateRoleMutationVariables = Exact<{
 
 
 export type UpdateRoleMutation = { __typename?: 'Mutation', updateRole: { __typename?: 'User', id: string, role: string } };
+
+export type GetAllInvitesQueryVariables = Exact<{
+  filter?: InputMaybe<FilterInput>;
+}>;
+
+
+export type GetAllInvitesQuery = { __typename?: 'Query', getTotalInvites: number, invites: Array<{ __typename?: 'Invite', id: string, email: string, role: string, createdAt: any, acceptedAt?: any | null, rejectedAt?: any | null, author?: { __typename?: 'User', name: string, email: string } | null }> };
+
+export type CreateInviteMutationVariables = Exact<{
+  input: CreateInviteInput;
+}>;
+
+
+export type CreateInviteMutation = { __typename?: 'Mutation', createInvite: { __typename?: 'Invite', id: string, role: string, createdAt: any } };
+
+export type GetAllMembersQueryVariables = Exact<{
+  filter?: InputMaybe<FilterMemberInput>;
+}>;
+
+
+export type GetAllMembersQuery = { __typename?: 'Query', getTotalMembers: number, members: Array<{ __typename?: 'Member', id: string, role: string, createdAt: any, user: { __typename?: 'User', id: string, email: string, name: string } }> };
+
+export type UpdateMemberRoleMutationVariables = Exact<{
+  input: UpdateMemberRoleInput;
+}>;
+
+
+export type UpdateMemberRoleMutation = { __typename?: 'Mutation', updateMemberRole: { __typename?: 'Member', id: string, role: string } };
+
+export type GetMyInviteQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetMyInviteQuery = { __typename?: 'Query', invite: { __typename?: 'Invite', id: string, acceptedAt?: any | null, rejectedAt?: any | null, author?: { __typename?: 'User', name: string } | null, organization: { __typename?: 'Organization', name: string, slug: string } } };
+
+export type AcceptInviteMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type AcceptInviteMutation = { __typename?: 'Mutation', acceptInvite: { __typename?: 'Invite', id: string } };
+
+export type RejectInviteMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type RejectInviteMutation = { __typename?: 'Mutation', rejectInvite: { __typename?: 'Invite', id: string } };
 
 export type GetMyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -808,6 +900,288 @@ export function useUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateRoleMutationHookResult = ReturnType<typeof useUpdateRoleMutation>;
 export type UpdateRoleMutationResult = Apollo.MutationResult<UpdateRoleMutation>;
 export type UpdateRoleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>;
+export const GetAllInvitesDocument = gql`
+    query getAllInvites($filter: FilterInput) {
+  invites(filter: $filter) {
+    id
+    email
+    role
+    createdAt
+    author {
+      name
+      email
+    }
+    acceptedAt
+    rejectedAt
+  }
+  getTotalInvites(filter: $filter)
+}
+    `;
+
+/**
+ * __useGetAllInvitesQuery__
+ *
+ * To run a query within a React component, call `useGetAllInvitesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllInvitesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllInvitesQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useGetAllInvitesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllInvitesQuery, GetAllInvitesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllInvitesQuery, GetAllInvitesQueryVariables>(GetAllInvitesDocument, options);
+      }
+export function useGetAllInvitesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllInvitesQuery, GetAllInvitesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllInvitesQuery, GetAllInvitesQueryVariables>(GetAllInvitesDocument, options);
+        }
+export function useGetAllInvitesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllInvitesQuery, GetAllInvitesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllInvitesQuery, GetAllInvitesQueryVariables>(GetAllInvitesDocument, options);
+        }
+export type GetAllInvitesQueryHookResult = ReturnType<typeof useGetAllInvitesQuery>;
+export type GetAllInvitesLazyQueryHookResult = ReturnType<typeof useGetAllInvitesLazyQuery>;
+export type GetAllInvitesSuspenseQueryHookResult = ReturnType<typeof useGetAllInvitesSuspenseQuery>;
+export type GetAllInvitesQueryResult = Apollo.QueryResult<GetAllInvitesQuery, GetAllInvitesQueryVariables>;
+export const CreateInviteDocument = gql`
+    mutation createInvite($input: CreateInviteInput!) {
+  createInvite(input: $input) {
+    id
+    role
+    createdAt
+  }
+}
+    `;
+export type CreateInviteMutationFn = Apollo.MutationFunction<CreateInviteMutation, CreateInviteMutationVariables>;
+
+/**
+ * __useCreateInviteMutation__
+ *
+ * To run a mutation, you first call `useCreateInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInviteMutation, { data, loading, error }] = useCreateInviteMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateInviteMutation(baseOptions?: Apollo.MutationHookOptions<CreateInviteMutation, CreateInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateInviteMutation, CreateInviteMutationVariables>(CreateInviteDocument, options);
+      }
+export type CreateInviteMutationHookResult = ReturnType<typeof useCreateInviteMutation>;
+export type CreateInviteMutationResult = Apollo.MutationResult<CreateInviteMutation>;
+export type CreateInviteMutationOptions = Apollo.BaseMutationOptions<CreateInviteMutation, CreateInviteMutationVariables>;
+export const GetAllMembersDocument = gql`
+    query getAllMembers($filter: FilterMemberInput) {
+  members(filter: $filter) {
+    id
+    role
+    user {
+      id
+      email
+      name
+    }
+    createdAt
+  }
+  getTotalMembers(filter: $filter)
+}
+    `;
+
+/**
+ * __useGetAllMembersQuery__
+ *
+ * To run a query within a React component, call `useGetAllMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllMembersQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useGetAllMembersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllMembersQuery, GetAllMembersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllMembersQuery, GetAllMembersQueryVariables>(GetAllMembersDocument, options);
+      }
+export function useGetAllMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllMembersQuery, GetAllMembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllMembersQuery, GetAllMembersQueryVariables>(GetAllMembersDocument, options);
+        }
+export function useGetAllMembersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllMembersQuery, GetAllMembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllMembersQuery, GetAllMembersQueryVariables>(GetAllMembersDocument, options);
+        }
+export type GetAllMembersQueryHookResult = ReturnType<typeof useGetAllMembersQuery>;
+export type GetAllMembersLazyQueryHookResult = ReturnType<typeof useGetAllMembersLazyQuery>;
+export type GetAllMembersSuspenseQueryHookResult = ReturnType<typeof useGetAllMembersSuspenseQuery>;
+export type GetAllMembersQueryResult = Apollo.QueryResult<GetAllMembersQuery, GetAllMembersQueryVariables>;
+export const UpdateMemberRoleDocument = gql`
+    mutation updateMemberRole($input: UpdateMemberRoleInput!) {
+  updateMemberRole(input: $input) {
+    id
+    role
+  }
+}
+    `;
+export type UpdateMemberRoleMutationFn = Apollo.MutationFunction<UpdateMemberRoleMutation, UpdateMemberRoleMutationVariables>;
+
+/**
+ * __useUpdateMemberRoleMutation__
+ *
+ * To run a mutation, you first call `useUpdateMemberRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMemberRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMemberRoleMutation, { data, loading, error }] = useUpdateMemberRoleMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMemberRoleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMemberRoleMutation, UpdateMemberRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMemberRoleMutation, UpdateMemberRoleMutationVariables>(UpdateMemberRoleDocument, options);
+      }
+export type UpdateMemberRoleMutationHookResult = ReturnType<typeof useUpdateMemberRoleMutation>;
+export type UpdateMemberRoleMutationResult = Apollo.MutationResult<UpdateMemberRoleMutation>;
+export type UpdateMemberRoleMutationOptions = Apollo.BaseMutationOptions<UpdateMemberRoleMutation, UpdateMemberRoleMutationVariables>;
+export const GetMyInviteDocument = gql`
+    query getMyInvite($id: String!) {
+  invite(id: $id) {
+    id
+    author {
+      name
+    }
+    organization {
+      name
+      slug
+    }
+    acceptedAt
+    rejectedAt
+  }
+}
+    `;
+
+/**
+ * __useGetMyInviteQuery__
+ *
+ * To run a query within a React component, call `useGetMyInviteQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyInviteQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMyInviteQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetMyInviteQuery(baseOptions: Apollo.QueryHookOptions<GetMyInviteQuery, GetMyInviteQueryVariables> & ({ variables: GetMyInviteQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMyInviteQuery, GetMyInviteQueryVariables>(GetMyInviteDocument, options);
+      }
+export function useGetMyInviteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyInviteQuery, GetMyInviteQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMyInviteQuery, GetMyInviteQueryVariables>(GetMyInviteDocument, options);
+        }
+export function useGetMyInviteSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMyInviteQuery, GetMyInviteQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMyInviteQuery, GetMyInviteQueryVariables>(GetMyInviteDocument, options);
+        }
+export type GetMyInviteQueryHookResult = ReturnType<typeof useGetMyInviteQuery>;
+export type GetMyInviteLazyQueryHookResult = ReturnType<typeof useGetMyInviteLazyQuery>;
+export type GetMyInviteSuspenseQueryHookResult = ReturnType<typeof useGetMyInviteSuspenseQuery>;
+export type GetMyInviteQueryResult = Apollo.QueryResult<GetMyInviteQuery, GetMyInviteQueryVariables>;
+export const AcceptInviteDocument = gql`
+    mutation acceptInvite($id: String!) {
+  acceptInvite(id: $id) {
+    id
+  }
+}
+    `;
+export type AcceptInviteMutationFn = Apollo.MutationFunction<AcceptInviteMutation, AcceptInviteMutationVariables>;
+
+/**
+ * __useAcceptInviteMutation__
+ *
+ * To run a mutation, you first call `useAcceptInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptInviteMutation, { data, loading, error }] = useAcceptInviteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAcceptInviteMutation(baseOptions?: Apollo.MutationHookOptions<AcceptInviteMutation, AcceptInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcceptInviteMutation, AcceptInviteMutationVariables>(AcceptInviteDocument, options);
+      }
+export type AcceptInviteMutationHookResult = ReturnType<typeof useAcceptInviteMutation>;
+export type AcceptInviteMutationResult = Apollo.MutationResult<AcceptInviteMutation>;
+export type AcceptInviteMutationOptions = Apollo.BaseMutationOptions<AcceptInviteMutation, AcceptInviteMutationVariables>;
+export const RejectInviteDocument = gql`
+    mutation rejectInvite($id: String!) {
+  rejectInvite(id: $id) {
+    id
+  }
+}
+    `;
+export type RejectInviteMutationFn = Apollo.MutationFunction<RejectInviteMutation, RejectInviteMutationVariables>;
+
+/**
+ * __useRejectInviteMutation__
+ *
+ * To run a mutation, you first call `useRejectInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectInviteMutation, { data, loading, error }] = useRejectInviteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRejectInviteMutation(baseOptions?: Apollo.MutationHookOptions<RejectInviteMutation, RejectInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RejectInviteMutation, RejectInviteMutationVariables>(RejectInviteDocument, options);
+      }
+export type RejectInviteMutationHookResult = ReturnType<typeof useRejectInviteMutation>;
+export type RejectInviteMutationResult = Apollo.MutationResult<RejectInviteMutation>;
+export type RejectInviteMutationOptions = Apollo.BaseMutationOptions<RejectInviteMutation, RejectInviteMutationVariables>;
 export const GetMyProfileDocument = gql`
     query GetMyProfile {
   profile {

@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, LogIn } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -21,6 +21,8 @@ type SignInFormSchema = z.infer<typeof signInFormSchema>;
 export function SignInForm() {
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const {
     register,
     handleSubmit,
@@ -54,6 +56,13 @@ export function SignInForm() {
         title: 'Bem-vindo!',
         description: 'Você foi autenticado com sucesso.',
       });
+
+      const callback = searchParams.get('callback');
+
+      if (callback) {
+        router.replace(callback);
+        return;
+      }
 
       if (!response.data?.session.user) {
         router.replace('/');

@@ -85,4 +85,15 @@ export class SessionsService {
       })
       .member();
   }
+
+  async organization(id: string) {
+    return this.prisma.session
+      .findUnique({
+        where: {
+          id,
+        },
+      })
+      .member()
+      .organization();
+  }
 }

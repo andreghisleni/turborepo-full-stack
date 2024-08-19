@@ -1,26 +1,26 @@
 import { Metadata } from 'next';
 import { unstable_noStore } from 'next/cache';
 
-import { AppAbilityCan } from '@/utils/app-ability';
 import { z } from 'zod';
-import { UsersTable } from './user-table';
+import { OrgAbilityCan } from '@/utils/org-ability';
+import { InvitesTable } from './invites-table';
 
 export const metadata: Metadata = {
-  title: 'Usuários',
+  title: 'Membros',
 };
 
 const pageParams = z.object({
   searchParams: z.object({
     pageIndex: z.coerce.number().default(0),
     pageSize: z.coerce.number().default(10),
-    nameFilter: z.string().default(''),
+    filterFilter: z.string().default(''),
   }),
 });
 
 export default async function UserPage(props: z.infer<typeof pageParams>) {
   unstable_noStore();
 
-  const r = AppAbilityCan(a => a.can('get-all', 'User'));
+  const r = OrgAbilityCan(a => a.can('get', 'Invite'));
 
   if (r) {
     return r;
@@ -33,15 +33,15 @@ export default async function UserPage(props: z.infer<typeof pageParams>) {
   }
 
   const {
-    searchParams: { pageIndex, pageSize, nameFilter },
+    searchParams: { pageIndex, pageSize, filterFilter },
   } = p.data;
 
   return (
-    <UsersTable
+    <InvitesTable
       {...{
         pageIndex,
         pageSize,
-        nameFilter,
+        filterFilter,
       }}
     />
   );

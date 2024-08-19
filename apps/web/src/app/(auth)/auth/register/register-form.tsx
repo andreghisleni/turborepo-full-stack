@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, LogIn } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { z } from 'zod';
@@ -28,6 +28,12 @@ type RegisterFormSchema = z.infer<typeof registerFormSchema>;
 export function RegisterForm() {
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const inviteId = searchParams.get('invite');
+  const email = searchParams.get('email');
+
+  const inviteExists = Boolean(inviteId && email);
 
   const [createUser] = useCreateUserMutation({
     onError: error => {
@@ -38,6 +44,15 @@ export function RegisterForm() {
       });
     },
     onCompleted: () => {
+      if (inviteExists) {
+        toast({
+          title: 'Convite aceito e usuário criado',
+          description: 'Usuário criado com sucesso',
+        });
+        router.replace('/auth/sign-in');
+        return;
+      }
+
       toast({
         title: 'Usuário criado com sucesso',
         description: 'Faça login para continuar',
@@ -50,7 +65,7 @@ export function RegisterForm() {
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
       name: '',
-      email: '',
+      email: inviteExists ? email || '' : '',
       password: '',
       password_confirmation: '',
     },
@@ -63,6 +78,7 @@ export function RegisterForm() {
           name: data.name,
           email: data.email,
           password: data.password,
+          inviteId: inviteId || undefined,
         },
       },
     });
@@ -92,7 +108,7 @@ export function RegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
-                <Input placeholder="Seu email" {...field} />
+                <Input placeholder="Seu email" {...field} disabled={inviteExists} />
                 <FormMessage />
               </FormItem>
             )}

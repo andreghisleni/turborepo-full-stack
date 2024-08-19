@@ -19,6 +19,8 @@ const GET_SESSION = gql`
           organization {
             id
             slug
+            avatarUrl
+            name
           }
         }
       }
@@ -49,6 +51,8 @@ export async function getServerSession() {
             organization: {
               id: string;
               slug: string;
+              avatarUrl: string;
+              name: string;
             };
           }[];
         };
