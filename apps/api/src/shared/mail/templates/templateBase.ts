@@ -1,3 +1,5 @@
+import { constants } from '@/constants';
+
 const css = `
 html {
   box-sizing: border-box;
@@ -139,8 +141,8 @@ div.footer a:hover{
 
 const footer = `
 <div class="footer">
-  <p>G Colecionáveis LTDA, Rua Onde Judas perdeu as botas, 123 </p>
-  <p>Envidado por G-Colecionáveis.</p>
+  <p>${constants.company.name}, ${constants.company.address}</p>
+  <p>Envidado por ${constants.APP_NAME}.</p>
 </div>
 `;
 

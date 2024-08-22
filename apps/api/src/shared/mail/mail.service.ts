@@ -1,3 +1,4 @@
+import { constants } from '@/constants';
 import { SesService } from '@agsolutions/nestjs-ses';
 import { Injectable } from '@nestjs/common';
 import handlebars from 'handlebars';
@@ -22,7 +23,7 @@ export class MailService {
     const html = baseHtml(t);
 
     const parsedHtml = handlebars.compile(html)({
-      app_name: 'GCollectibles',
+      app_name: constants.APP_NAME,
       email_title: subject,
       ...template.data,
     });
@@ -31,10 +32,7 @@ export class MailService {
       wordwrap: 130,
     });
 
-    const from = {
-      name: 'AGSolutions',
-      email: 'envio@andreg.com.br',
-    };
+    const { from } = constants.mail;
 
     await this.sesService.sendEmail({
       from: `${from?.name} <${from?.email}>`,
