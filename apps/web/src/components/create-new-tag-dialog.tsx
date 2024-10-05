@@ -1,13 +1,13 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { AlertCircle, Loader2 } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertCircle, Loader2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
-import { trpc } from '@/lib/trpc/react'
+import { trpc } from '@/lib/trpc/react';
 
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
 import {
   DialogContent,
   DialogDescription,
@@ -15,9 +15,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog'
-import { Input } from './ui/input'
-import { Label } from './ui/label'
+} from './ui/dialog';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 
 const newTagFormSchema = z.object({
   tag: z
@@ -27,18 +27,16 @@ const newTagFormSchema = z.object({
     .regex(/^[a-zA-Z]+(-[a-zA-Z]+)*$/, {
       message: 'Use only letters and hyphens.',
     }),
-})
+});
 
-type NewTagFormSchema = z.infer<typeof newTagFormSchema>
+type NewTagFormSchema = z.infer<typeof newTagFormSchema>;
 
 interface CreateNewTagDialogProps {
-  onRequestClose: () => void
+  onRequestClose: () => void;
 }
 
-export function CreateNewTagDialog({
-  onRequestClose,
-}: CreateNewTagDialogProps) {
-  const utils = trpc.useUtils()
+export function CreateNewTagDialog({ onRequestClose }: CreateNewTagDialogProps) {
+  const utils = trpc.useUtils();
 
   const {
     register,
@@ -50,24 +48,24 @@ export function CreateNewTagDialog({
     defaultValues: {
       tag: '',
     },
-  })
+  });
 
   const { mutateAsync: createTag } = trpc.createTag.useMutation({
     onSuccess() {
-      utils.getTags.invalidate()
+      utils.getTags.invalidate();
     },
-  })
+  });
 
   async function handleCreateTag({ tag }: NewTagFormSchema) {
     try {
-      await createTag({ tag })
+      await createTag({ tag });
 
-      reset()
-      onRequestClose()
+      reset();
+      onRequestClose();
     } catch (err) {
       toast.error('Uh oh! Something went wrong.', {
         description: `An error ocurred while trying to create the tag. Maybe you're trying to create a duplicated tag.`,
-      })
+      });
     }
   }
 
@@ -77,21 +75,15 @@ export function CreateNewTagDialog({
         <DialogTitle>Create new tag</DialogTitle>
         <DialogDescription className="space-y-3">
           <p>
-            Remember to avoid creating tags unnecessarily and to keep a maximum
-            of{' '}
-            <span className="font-semibold text-accent-foreground">
-              3 tags per video
-            </span>
-            .
+            Remember to avoid creating tags unnecessarily and to keep a maximum of{' '}
+            <span className="font-semibold text-accent-foreground">3 tags per video</span>.
           </p>
           <p className="flex items-center">
             <AlertCircle className="mr-2 inline h-4 w-4" />
             <span>
               Use the{' '}
-              <span className="font-semibold text-accent-foreground">
-                following examples
-              </span>{' '}
-              to name your tags:
+              <span className="font-semibold text-accent-foreground">following examples</span> to
+              name your tags:
             </span>
           </p>
           <ol className="space-y-2">
@@ -99,12 +91,10 @@ export function CreateNewTagDialog({
               <Badge variant="outline">ignite</Badge> - reference to the product
             </li>
             <li>
-              <Badge variant="outline">react</Badge> - reference to the main
-              technology
+              <Badge variant="outline">react</Badge> - reference to the main technology
             </li>
             <li>
-              <Badge variant="outline">fundamentos-do-react</Badge> - reference
-              to the course
+              <Badge variant="outline">fundamentos-do-react</Badge> - reference to the course
             </li>
           </ol>
         </DialogDescription>
@@ -138,14 +128,10 @@ export function CreateNewTagDialog({
             </Button>
           </DialogTrigger>
           <Button className="w-24" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              'Create'
-            )}
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create'}
           </Button>
         </DialogFooter>
       </form>
     </DialogContent>
-  )
+  );
 }

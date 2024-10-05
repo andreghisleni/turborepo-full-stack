@@ -1,21 +1,21 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import React, { ReactNode } from 'react'
-import { useDropzone } from 'react-dropzone'
+import Image from 'next/image';
+import React, { ReactNode } from 'react';
+import { useDropzone } from 'react-dropzone';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
-import UploadSvg from '../assets/upload-icon.svg'
+import UploadSvg from '../assets/upload-icon.svg';
 
 interface UploadProps {
-  onUpload: (files: File[]) => void
-  uploadType?: 'image' | 'pdf' | 'all'
+  onUpload: (files: File[]) => void;
+  uploadType?: 'image' | 'pdf' | 'all';
 }
 
 const UploadMessage: React.FC<{
-  children: ReactNode
-  type?: 'error' | 'success'
+  children: ReactNode;
+  type?: 'error' | 'success';
 }> = ({ children, type }) => {
   return (
     <p
@@ -28,45 +28,44 @@ const UploadMessage: React.FC<{
     >
       {children}
     </p>
-  )
-}
+  );
+};
 
 export const Dropzone: React.FC<UploadProps> = ({ onUpload, uploadType }) => {
-  const { getRootProps, getInputProps, isDragActive, isDragReject } =
-    useDropzone({
-      accept: uploadType
-        ? {
-            ...(uploadType === 'image' && {
-              'image/jpeg': ['.jpeg', '.jpg'],
-              'image/png': ['.png'],
-            }),
-            ...(uploadType === 'pdf' && {
-              'application/pdf': ['.pdf'],
-            }),
-            ...(uploadType === 'all' && {
-              'image/jpeg': ['.jpeg', '.jpg'],
-              'image/png': ['.png'],
-              'application/pdf': ['.pdf'],
-            }),
-          }
-        : {
+  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+    accept: uploadType
+      ? {
+          ...(uploadType === 'image' && {
+            'image/jpeg': ['.jpeg', '.jpg'],
+            'image/png': ['.png'],
+          }),
+          ...(uploadType === 'pdf' && {
+            'application/pdf': ['.pdf'],
+          }),
+          ...(uploadType === 'all' && {
             'image/jpeg': ['.jpeg', '.jpg'],
             'image/png': ['.png'],
             'application/pdf': ['.pdf'],
-          },
-      onDropAccepted: (files) => onUpload(files),
-    })
+          }),
+        }
+      : {
+          'image/jpeg': ['.jpeg', '.jpg'],
+          'image/png': ['.png'],
+          'application/pdf': ['.pdf'],
+        },
+    onDropAccepted: files => onUpload(files),
+  });
 
   function renderDragMessage(isDragAc: boolean, isDragRe: boolean): ReactNode {
     if (!isDragAc) {
-      return <UploadMessage>Selecione ou arraste o arquivo aqui.</UploadMessage>
+      return <UploadMessage>Selecione ou arraste o arquivo aqui.</UploadMessage>;
     }
 
     if (isDragRe) {
-      return <UploadMessage type="error">Arquivo não suportado</UploadMessage>
+      return <UploadMessage type="error">Arquivo não suportado</UploadMessage>;
     }
 
-    return <UploadMessage type="success">Solte o arquivo aqui</UploadMessage>
+    return <UploadMessage type="success">Solte o arquivo aqui</UploadMessage>;
   }
 
   return (
@@ -83,5 +82,5 @@ export const Dropzone: React.FC<UploadProps> = ({ onUpload, uploadType }) => {
       <Image src={UploadSvg} alt="Upload Icon" className="w-[106px]" />
       {renderDragMessage(isDragActive, isDragReject)}
     </div>
-  )
-}
+  );
+};

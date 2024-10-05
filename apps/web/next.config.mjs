@@ -27,6 +27,7 @@ const nextConfig = {
       { hostname: 'lh3.googleusercontent.com' },
       { hostname: 'github.com' },
       { hostname: 'gincana.a72a6f120019167e519d34db3c3c75b5.r2.cloudflarestorage.com' },
+      { hostname: 'localhost' },
     ],
   },
 

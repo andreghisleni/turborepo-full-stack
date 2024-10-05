@@ -1,21 +1,21 @@
-'use client'
+'use client';
 
-import * as SheetPrimitive from '@radix-ui/react-dialog'
-import { X } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import React from 'react'
+import * as SheetPrimitive from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
-import { SheetOverlay, sheetVariants } from './ui/sheet'
+import { SheetOverlay, sheetVariants } from './ui/sheet';
 
 export const InterceptedSheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
-  const router = useRouter()
+  const router = useRouter();
 
   const onDismiss = React.useCallback(() => {
-    router.back()
-  }, [router])
+    router.back();
+  }, [router]);
 
   return (
     <>
@@ -37,7 +37,7 @@ export const InterceptedSheetContent = React.forwardRef<
         </button>
       </SheetPrimitive.Content>
     </>
-  )
-})
+  );
+});
 
-InterceptedSheetContent.displayName = SheetPrimitive.Content.displayName
+InterceptedSheetContent.displayName = SheetPrimitive.Content.displayName;

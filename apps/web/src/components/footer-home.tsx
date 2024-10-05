@@ -1,5 +1,5 @@
 // import { MenuLink } from './header-home/menu-link'
-import { Container } from './my-ui/container'
+import { Container } from './my-ui/container';
 
 export function FooterHome() {
   return (
@@ -20,5 +20,5 @@ export function FooterHome() {
         </div>
       </Container>
     </footer>
-  )
+  );
 }

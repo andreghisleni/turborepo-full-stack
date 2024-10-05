@@ -1,23 +1,24 @@
-'use client'
-import { useEffect, useState } from 'react'
-import { codeToHtml } from 'shiki'
+'use client';
+
+import { useEffect, useState } from 'react';
+import { codeToHtml } from 'shiki';
 
 export default function SJ({ data }: { data: any }) { // eslint-disable-line
-  const [code, setCode] = useState('')
+  const [code, setCode] = useState('');
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       const c = await codeToHtml(JSON.stringify(data, null, 2), {
         lang: 'json',
         themes: {
           light: 'min-light',
           dark: 'nord',
         },
-      })
+      });
 
-      setCode(c)
-    })()
-  }, [data])
+      setCode(c);
+    })();
+  }, [data]);
 
   return (
     <div
@@ -25,5 +26,5 @@ export default function SJ({ data }: { data: any }) { // eslint-disable-line
         __html: code,
       }}
     />
-  )
+  );
 }

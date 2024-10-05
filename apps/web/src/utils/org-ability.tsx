@@ -4,7 +4,7 @@ import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 
-type PolicyOrgHandlerCallback = (ability: organization.AppAbility) => boolean;
+export type PolicyOrgHandlerCallback = (ability: organization.AppAbility) => boolean;
 
 export function OrgAbilityCan(a: PolicyOrgHandlerCallback) {
   const memberRole = getCookie('member-role', { cookies });

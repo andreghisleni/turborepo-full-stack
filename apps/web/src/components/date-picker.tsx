@@ -1,18 +1,9 @@
-import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
-import { useState } from 'react'
-import { ControllerRenderProps } from 'react-hook-form'
+import { ControllerRenderProps } from 'react-hook-form';
 
-import { Calendar } from '@/components/ui/calendar'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-import { Button } from './ui/button'
-import { FormControl } from './ui/form'
+import { FormControl } from './ui/form';
 
 export function MyDatePicker(field: ControllerRenderProps) {
   return (
@@ -41,12 +32,10 @@ export function MyDatePicker(field: ControllerRenderProps) {
           mode="single"
           selected={field.value}
           onSelect={field.onChange}
-          disabled={(date) =>
-            date > new Date() || date < new Date('1900-01-01')
-          }
+          disabled={date => date > new Date() || date < new Date('1900-01-01')}
           initialFocus
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

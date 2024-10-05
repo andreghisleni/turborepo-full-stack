@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { Link1Icon } from '@radix-ui/react-icons'
-import { Edit2 } from 'lucide-react'
-import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { Link1Icon } from '@radix-ui/react-icons';
+import { Edit2 } from 'lucide-react';
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
 
 import {
   Dialog,
@@ -11,19 +11,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Textarea } from '@/components/ui/textarea'
-import { trpc } from '@/lib/trpc/react'
+} from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
+import { trpc } from '@/lib/trpc/react';
 
-import { Button } from './ui/button'
+import { Button } from './ui/button';
 
 export interface TranscriptionPreviewProps {
-  videoId: string
+  videoId: string;
 }
 
 export function TranscriptionPreview({ videoId }: TranscriptionPreviewProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const {
     data,
@@ -36,15 +36,15 @@ export function TranscriptionPreview({ videoId }: TranscriptionPreviewProps) {
     {
       enabled: isDialogOpen,
     },
-  )
+  );
 
   const transcriptionText = useMemo(() => {
     if (!data) {
-      return ''
+      return '';
     }
 
-    return data.transcription.segments.map((segment) => segment.text).join('')
-  }, [data])
+    return data.transcription.segments.map(segment => segment.text).join('');
+  }, [data]);
 
   return (
     <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
@@ -61,7 +61,7 @@ export function TranscriptionPreview({ videoId }: TranscriptionPreviewProps) {
         {isLoadingTranscription || isPendingTranscription ? (
           <div className="space-y-2">
             {Array.from({ length: 20 }).map((_, i) => {
-              return <Skeleton key={i} className="h-3 w-full" />
+              return <Skeleton key={i} className="h-3 w-full" />;
             })}
           </div>
         ) : (
@@ -83,5 +83,5 @@ export function TranscriptionPreview({ videoId }: TranscriptionPreviewProps) {
         )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

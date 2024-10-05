@@ -1,28 +1,28 @@
-'use client'
+'use client';
 
-import { ComponentProps, useRef, useState } from 'react'
-import { twMerge } from 'tailwind-merge'
+import { ComponentProps, useRef, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
-import { Button } from './ui/button'
+import { Button } from './ui/button';
 
 export interface CopyButtonProps extends ComponentProps<typeof Button> {
-  textToCopy: string
+  textToCopy: string;
 }
 
 export function CopyButton({ textToCopy, ...props }: CopyButtonProps) {
-  const [wasCopiedRecently, setWasCopiedRecently] = useState(false)
-  const copyTimeoutRef = useRef<NodeJS.Timeout>()
+  const [wasCopiedRecently, setWasCopiedRecently] = useState(false);
+  const copyTimeoutRef = useRef<NodeJS.Timeout>();
 
   function handleCopy() {
-    clearTimeout(copyTimeoutRef.current)
+    clearTimeout(copyTimeoutRef.current);
 
-    navigator.clipboard.writeText(textToCopy)
+    navigator.clipboard.writeText(textToCopy);
 
-    setWasCopiedRecently(true)
+    setWasCopiedRecently(true);
 
     copyTimeoutRef.current = setTimeout(() => {
-      setWasCopiedRecently(false)
-    }, 2000)
+      setWasCopiedRecently(false);
+    }, 2000);
   }
 
   return (
@@ -37,5 +37,5 @@ export function CopyButton({ textToCopy, ...props }: CopyButtonProps) {
     >
       {wasCopiedRecently ? 'Copied!' : props.children}
     </Button>
-  )
+  );
 }

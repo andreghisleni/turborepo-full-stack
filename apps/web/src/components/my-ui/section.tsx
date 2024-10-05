@@ -1,7 +1,7 @@
-import React from 'react'
-import { tv, VariantProps } from 'tailwind-variants'
+import React from 'react';
+import { tv, VariantProps } from 'tailwind-variants';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 const sectionVariants = tv({
   base: 'flex w-full justify-center py-12',
@@ -14,26 +14,17 @@ const sectionVariants = tv({
   defaultVariants: {
     variant: 'default',
   },
-})
+});
 
 export interface SectionProps
-  extends React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLElement>,
-      HTMLElement
-    >,
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>,
     VariantProps<typeof sectionVariants> {}
 
 const Section = React.forwardRef<HTMLElement, SectionProps>(
   ({ className, variant, ...props }, ref) => {
-    return (
-      <section
-        className={cn(sectionVariants({ variant }), className)}
-        ref={ref}
-        {...props}
-      />
-    )
+    return <section className={cn(sectionVariants({ variant }), className)} ref={ref} {...props} />;
   },
-)
-Section.displayName = 'Section'
+);
+Section.displayName = 'Section';
 
-export { Section }
+export { Section };

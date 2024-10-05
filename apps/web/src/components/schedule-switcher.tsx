@@ -1,10 +1,10 @@
-import { RouterOutput } from '@full-stack/trpc'
-import { CaretSortIcon, PlusCircledIcon } from '@radix-ui/react-icons'
-import { CheckIcon, Loader2 } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
-import { useCallback, useMemo, useState, useTransition } from 'react'
+import { RouterOutput } from '@full-stack/trpc';
+import { CaretSortIcon, PlusCircledIcon } from '@radix-ui/react-icons';
+import { CheckIcon, Loader2 } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useCallback, useMemo, useState, useTransition } from 'react';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -13,43 +13,36 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+} from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 type ScheduleSwitcherProps = {
-  schedules: RouterOutput['getSchedules']['schedules']
-  url: string
-}
+  schedules: RouterOutput['getSchedules']['schedules'];
+  url: string;
+};
 
-export default function ScheduleSwitcher({
-  schedules,
-  url,
-}: ScheduleSwitcherProps) {
-  const router = useRouter()
-  const { scheduleId } = useParams<{ scheduleId?: string }>()
+export default function ScheduleSwitcher({ schedules, url }: ScheduleSwitcherProps) {
+  const router = useRouter();
+  const { scheduleId } = useParams<{ scheduleId?: string }>();
 
-  const [isPendingFilterTransition, startTransition] = useTransition()
+  const [isPendingFilterTransition, startTransition] = useTransition();
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   const selectSchedule = useCallback(
     (id: string) => {
       startTransition(() => {
-        router.push(`${url}/${id}`)
-      })
-      setOpen(false)
+        router.push(`${url}/${id}`);
+      });
+      setOpen(false);
     },
     [router, startTransition, url],
-  )
+  );
 
   const selectedSchedule = useMemo(() => {
-    return schedules.find((schedule) => schedule.id === scheduleId)
-  }, [schedules, scheduleId])
+    return schedules.find(schedule => schedule.id === scheduleId);
+  }, [schedules, scheduleId]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -61,11 +54,8 @@ export default function ScheduleSwitcher({
           aria-label="Select a schedule"
           className={cn('w-[200px] justify-between')}
         >
-          {isPendingFilterTransition && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          {!isPendingFilterTransition &&
-            (selectedSchedule?.name ?? 'Select a schedule')}
+          {isPendingFilterTransition && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {!isPendingFilterTransition && (selectedSchedule?.name ?? 'Select a schedule')}
           <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -74,7 +64,7 @@ export default function ScheduleSwitcher({
           <CommandList>
             <CommandInput placeholder="Search schedule..." />
             <CommandEmpty>No schedule found.</CommandEmpty>
-            {schedules.map((schedule) => (
+            {schedules.map(schedule => (
               <CommandItem
                 key={schedule.id}
                 onSelect={() => selectSchedule(schedule.id)}
@@ -84,9 +74,7 @@ export default function ScheduleSwitcher({
                 <CheckIcon
                   className={cn(
                     'ml-auto h-4 w-4',
-                    selectedSchedule?.id === schedule.id
-                      ? 'opacity-100'
-                      : 'opacity-0',
+                    selectedSchedule?.id === schedule.id ? 'opacity-100' : 'opacity-0',
                   )}
                 />
               </CommandItem>
@@ -97,8 +85,8 @@ export default function ScheduleSwitcher({
             <CommandGroup>
               <CommandItem
                 onSelect={() => {
-                  setOpen(false)
-                  router.push('/settings/schedule')
+                  setOpen(false);
+                  router.push('/settings/schedule');
                 }}
               >
                 <PlusCircledIcon className="mr-2 h-5 w-5" />
@@ -109,5 +97,5 @@ export default function ScheduleSwitcher({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

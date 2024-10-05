@@ -1,27 +1,16 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
-import { Button } from './ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select'
+import { Button } from './ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface PaginationProps {
-  pages: number
-  items: number
-  page: number
-  limit: number
-  showing: number
-  handleUpdatePage: (page: number) => void
-  handleChangeLimit: (limit: number) => void
+  pages: number;
+  items: number;
+  page: number;
+  limit: number;
+  showing: number;
+  handleUpdatePage: (page: number) => void;
+  handleChangeLimit: (limit: number) => void;
 }
 
 export function Pagination({
@@ -34,30 +23,30 @@ export function Pagination({
   handleChangeLimit,
 }: PaginationProps) {
   const firstPage = () => {
-    handleUpdatePage(0)
-  }
+    handleUpdatePage(0);
+  };
 
   const previousPage = () => {
     if (page - 1 < 0) {
-      return
+      return;
     }
-    handleUpdatePage(page - 1)
-  }
+    handleUpdatePage(page - 1);
+  };
 
   const nextPage = () => {
     if (page + 1 > pages) {
-      return
+      return;
     }
-    handleUpdatePage(page + 1)
-  }
+    handleUpdatePage(page + 1);
+  };
 
   const lastPage = () => {
-    handleUpdatePage(pages)
-  }
+    handleUpdatePage(pages);
+  };
 
   const changeLimit = (value: string) => {
-    handleChangeLimit(Number(value))
-  }
+    handleChangeLimit(Number(value));
+  };
 
   return (
     <div className="flex items-center justify-between text-wrap text-sm">
@@ -106,5 +95,5 @@ export function Pagination({
         </div>
       </div>
     </div>
-  )
+  );
 }

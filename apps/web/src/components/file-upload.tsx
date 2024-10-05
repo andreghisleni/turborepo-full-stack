@@ -1,36 +1,31 @@
-import { X } from 'lucide-react'
+import { X } from 'lucide-react';
 
-import { UploadFile } from '@/hooks/useUploadFile'
+import { UploadFile } from '@/hooks/useUploadFile';
 
-import { Dropzone } from './Dropzone'
-import { FileViewer } from './file-viewer'
-import { Button } from './ui/button'
-import { Card } from './ui/card'
+import { Dropzone } from './Dropzone';
+import { FileViewer } from './file-viewer';
+import { Button } from './ui/button';
+import { Card } from './ui/card';
 
 type ButtonProps = {
-  isFileUploading: boolean
-  fileUploadedName?: string
-}
+  isFileUploading: boolean;
+  fileUploadedName?: string;
+};
 
 type FileUploadProps = {
-  file: UploadFile
+  file: UploadFile;
   fileUploaded?: {
-    name: string
-    url: string
-    file_name: string
-  }
+    name: string;
+    url: string;
+    file_name: string;
+  };
 
-  buttonTexts?: (b: ButtonProps) => string
+  buttonTexts?: (b: ButtonProps) => string;
 
-  uploadType?: 'image' | 'pdf' | 'all'
-}
+  uploadType?: 'image' | 'pdf' | 'all';
+};
 
-export function FileUpload({
-  file,
-  fileUploaded,
-  buttonTexts,
-  uploadType,
-}: FileUploadProps) {
+export function FileUpload({ file, fileUploaded, buttonTexts, uploadType }: FileUploadProps) {
   return (
     <div className="flex w-full max-w-[600px] flex-col gap-4">
       <Card className="relative flex h-[502px] w-full max-w-[700px] flex-col rounded-lg">
@@ -46,7 +41,7 @@ export function FileUpload({
               <button
                 type="button"
                 onClick={() => {
-                  file.handleRemoveFile()
+                  file.handleRemoveFile();
                 }}
                 className="rounded-bl-lg rounded-tr-lg bg-primary p-2 text-white hover:bg-primary/95 disabled:bg-primary/35"
                 disabled={!!file.fileUploadedName}
@@ -62,11 +57,7 @@ export function FileUpload({
                 className="h-full w-full rounded-lg"
               />
             ) : (
-              <img
-                src={file.fileUrl}
-                alt=""
-                className="w-full overflow-x-auto rounded-lg"
-              />
+              <img src={file.fileUrl} alt="" className="w-full overflow-x-auto rounded-lg" />
             )}
           </>
         ) : (
@@ -96,5 +87,5 @@ export function FileUpload({
         </Button>
       )}
     </div>
-  )
+  );
 }

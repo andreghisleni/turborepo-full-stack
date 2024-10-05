@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Column,
@@ -12,19 +12,19 @@ import {
   SortingState,
   useReactTable,
   VisibilityState,
-} from '@tanstack/react-table'
-import { ChevronDown } from 'lucide-react'
-import * as React from 'react'
-import reactNodeToString from 'react-node-to-string'
+} from '@tanstack/react-table';
+import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
+import reactNodeToString from 'react-node-to-string';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -32,41 +32,41 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/components/ui/table';
 
-import { ScrollArea, ScrollBar } from './ui/scroll-area'
+import { ScrollArea, ScrollBar } from './ui/scroll-area';
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
   pagination?: {
-    page: number
-    limit: number
-    total_pages: number
-    total_items: number
-  }
-  addFunction?: () => void
-  addComponent?: React.ReactNode
-  noDataMessage?: string
-  onRowSelectionChange?: (selectedRows: TData[]) => void
+    page: number;
+    limit: number;
+    total_pages: number;
+    total_items: number;
+  };
+  addFunction?: () => void;
+  addComponent?: React.ReactNode;
+  noDataMessage?: string;
+  onRowSelectionChange?: (selectedRows: TData[]) => void;
 
-  filterComponent?: React.ReactNode
-  ifJustFilterComponent?: boolean
+  filterComponent?: React.ReactNode;
+  ifJustFilterComponent?: boolean;
 }
 
 const getHeaderValue = (column: Column<unknown>): string => {
-  const { header } = column.columnDef
+  const { header } = column.columnDef;
 
   if (typeof header === 'string') {
-    return header
+    return header;
   }
 
   if (typeof header === 'function') {
-    return reactNodeToString(header(column as any)) // eslint-disable-line @typescript-eslint/no-explicit-any
+    return reactNodeToString(header(column as any)); // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 
-  return column.id
-}
+  return column.id;
+};
 
 export function DataTable<TData, TValue>({
   columns,
@@ -79,14 +79,11 @@ export function DataTable<TData, TValue>({
   filterComponent,
   ifJustFilterComponent = false,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [globalFilter, setGlobalFilter] = React.useState('')
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [globalFilter, setGlobalFilter] = React.useState('');
 
   const table = useReactTable({
     data,
@@ -107,18 +104,16 @@ export function DataTable<TData, TValue>({
       rowSelection,
       globalFilter,
     },
-  })
+  });
 
   React.useEffect(() => {
     onRowSelectionChange &&
-      onRowSelectionChange(
-        table.getSelectedRowModel().rows.map((row) => row.original),
-      )
-  }, [table, onRowSelectionChange, rowSelection])
+      onRowSelectionChange(table.getSelectedRowModel().rows.map(row => row.original));
+  }, [table, onRowSelectionChange, rowSelection]);
 
   React.useEffect(() => {
-    !pagination && table.setPageSize(10000)
-  }, [table, pagination])
+    !pagination && table.setPageSize(10000);
+  }, [table, pagination]);
 
   return (
     <ScrollArea>
@@ -130,7 +125,7 @@ export function DataTable<TData, TValue>({
                 <Input
                   placeholder="Filter..."
                   value={globalFilter ?? ''}
-                  onChange={(event) => setGlobalFilter(event.target.value)}
+                  onChange={event => setGlobalFilter(event.target.value)}
                   className="max-w-ssm"
                 />
                 {filterComponent && filterComponent}
@@ -148,29 +143,23 @@ export function DataTable<TData, TValue>({
                 <DropdownMenuContent align="end">
                   {table
                     .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => {
+                    .filter(column => column.getCanHide())
+                    .map(column => {
                       return (
                         <DropdownMenuCheckboxItem
                           key={column.id}
                           className="capitalize"
                           checked={column.getIsVisible()}
-                          onCheckedChange={(value) =>
-                            column.toggleVisibility(!!value)
-                          }
+                          onCheckedChange={value => column.toggleVisibility(!!value)}
                         >
                           {getHeaderValue(column as any) /* eslint-disable-line */}
                         </DropdownMenuCheckboxItem>
-                      )
+                      );
                     })}
                 </DropdownMenuContent>
               </DropdownMenu>
               {addFunction && (
-                <Button
-                  variant="outline"
-                  className="ml-2"
-                  onClick={addFunction}
-                >
+                <Button variant="outline" className="ml-2" onClick={addFunction}>
                   Add
                 </Button>
               )}
@@ -180,9 +169,9 @@ export function DataTable<TData, TValue>({
           <div className="overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
+                {table.getHeaderGroups().map(headerGroup => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
+                    {headerGroup.headers.map(header => {
                       return (
                         <TableHead key={header.id}>
                           {
@@ -193,34 +182,25 @@ export function DataTable<TData, TValue>({
                                 header.getContext(),// eslint-disable-line
                               )/*eslint-disable-line*/}
                         </TableHead>
-                      )
+                      );
                     })}
                   </TableRow>
                 ))}
               </TableHeader>
               <TableBody>
                 {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && 'selected'}
-                    >
-                      {row.getVisibleCells().map((cell) => (
+                  table.getRowModel().rows.map(row => (
+                    <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                      {row.getVisibleCells().map(cell => (
                         <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
                       {noDataMessage}
                     </TableCell>
                   </TableRow>
@@ -229,7 +209,7 @@ export function DataTable<TData, TValue>({
             </Table>
           </div>
           <div className="flex items-center justify-end space-x-2 py-4">
-            {!!table.getAllColumns().find((c) => c.id === 'select') && (
+            {!!table.getAllColumns().find(c => c.id === 'select') && (
               <div className="flex-1 text-sm text-muted-foreground">
                 {table.getFilteredSelectedRowModel().rows.length} of{' '}
                 {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -260,5 +240,5 @@ export function DataTable<TData, TValue>({
       </div>
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
-  )
+  );
 }

@@ -12,7 +12,7 @@
   "devDependencies": {
     "@agsolutions/eslint-config": "^1.0.29",
     "@full-stack/prettier": "workspace:*",
-    "eslint-config-next": "^14.1.0",
+    "eslint-config-next": "^14.2.14",
     "eslint-plugin-simple-import-sort": "^10.0.0"
   },
   "overrides": {

@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { ComponentProps } from 'react'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ComponentProps } from 'react';
 
 export type NavLinkProps = ComponentProps<typeof Link> & {
-  shouldMatchExact?: boolean
-}
+  shouldMatchExact?: boolean;
+};
 
 export function NavLink({ shouldMatchExact = false, ...props }: NavLinkProps) {
-  const pathName = usePathname()
+  const pathName = usePathname();
 
   const isCurrent =
     props.href === '/' || shouldMatchExact
       ? pathName === props.href
-      : pathName.startsWith(props.href.toString())
+      : pathName.startsWith(props.href.toString());
 
-  return <Link {...props} prefetch={false} data-current={isCurrent} />
+  return <Link {...props} prefetch={false} data-current={isCurrent} />;
 }

@@ -1,33 +1,27 @@
-import { CheckIcon, PlusIcon } from '@radix-ui/react-icons'
-import { Loader2, Tag } from 'lucide-react'
-import { useState } from 'react'
-import { twMerge } from 'tailwind-merge'
+import { CheckIcon, PlusIcon } from '@radix-ui/react-icons';
+import { Loader2, Tag } from 'lucide-react';
+import { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
-import useDebounceValue from '@/hooks/useDebounceValue'
-import { trpc } from '@/lib/trpc/react'
+import useDebounceValue from '@/hooks/useDebounceValue';
+import { trpc } from '@/lib/trpc/react';
 
-import { CreateNewTagDialog } from './create-new-tag-dialog'
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
-import {
-  Command,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from './ui/command'
-import { Dialog } from './ui/dialog'
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
-import { ScrollArea } from './ui/scroll-area'
-import { Separator } from './ui/separator'
+import { CreateNewTagDialog } from './create-new-tag-dialog';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
+import { Dialog } from './ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { ScrollArea } from './ui/scroll-area';
+import { Separator } from './ui/separator';
 
 export interface TagInputProps {
-  value: string[]
-  onValueChange: (tags: string[]) => void
-  error?: string
-  previewTagsAmount?: number
-  allowTagCreation?: boolean
-  onApplyToAll?: () => void
+  value: string[];
+  onValueChange: (tags: string[]) => void;
+  error?: string;
+  previewTagsAmount?: number;
+  allowTagCreation?: boolean;
+  onApplyToAll?: () => void;
 }
 
 export function TagInput({
@@ -38,11 +32,11 @@ export function TagInput({
   allowTagCreation = true,
   onApplyToAll,
 }: TagInputProps) {
-  const [createTagDialogOpen, setCreateTagDialogOpen] = useState(false)
-  const [open, setOpen] = useState(false)
-  const [search, setSearch] = useState('')
+  const [createTagDialogOpen, setCreateTagDialogOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
 
-  const searchTerm = useDebounceValue(search, 300)
+  const searchTerm = useDebounceValue(search, 300);
 
   const {
     data,
@@ -52,14 +46,14 @@ export function TagInput({
     q: searchTerm,
     pageSize: 20,
     pageIndex: 0,
-  })
+  });
 
   function handleAddTag(tag: string) {
-    onValueChange([...value, tag])
+    onValueChange([...value, tag]);
   }
 
   function handleRemoveTag(tag: string) {
-    onValueChange(value.filter((item) => item !== tag))
+    onValueChange(value.filter(item => item !== tag));
   }
 
   return (
@@ -75,9 +69,7 @@ export function TagInput({
             <Tag className="mr-2 h-3 w-3" />
             <span className="text-xs">Tags</span>
 
-            {!!error && (
-              <span className="ml-2 text-xs font-normal">{error}</span>
-            )}
+            {!!error && <span className="ml-2 text-xs font-normal">{error}</span>}
 
             {value.length > 0 && (
               <>
@@ -91,7 +83,7 @@ export function TagInput({
                       {value.length} selected
                     </Badge>
                   ) : (
-                    value.map((tag) => (
+                    value.map(tag => (
                       <Badge
                         variant="secondary"
                         key={tag}
@@ -108,11 +100,7 @@ export function TagInput({
         </PopoverTrigger>
         <PopoverContent className="w-[320px] p-0" align="start">
           <Command shouldFilter={false}>
-            <CommandInput
-              placeholder="Tags"
-              onValueChange={setSearch}
-              value={search}
-            />
+            <CommandInput placeholder="Tags" onValueChange={setSearch} value={search} />
 
             <CommandList>
               <ScrollArea className="h-[240px] w-full">
@@ -120,7 +108,7 @@ export function TagInput({
                   {allowTagCreation && (
                     <CommandItem
                       onSelect={() => {
-                        setCreateTagDialogOpen(true)
+                        setCreateTagDialogOpen(true);
                       }}
                       className="flex items-center gap-2"
                     >
@@ -140,8 +128,8 @@ export function TagInput({
                     </div>
                   ) : (
                     data?.tags &&
-                    data.tags.map((option) => {
-                      const isSelected = value.includes(option.slug)
+                    data.tags.map(option => {
+                      const isSelected = value.includes(option.slug);
 
                       return (
                         <CommandItem
@@ -149,9 +137,9 @@ export function TagInput({
                           value={option.id}
                           onSelect={() => {
                             if (isSelected) {
-                              handleRemoveTag(option.slug)
+                              handleRemoveTag(option.slug);
                             } else {
-                              handleAddTag(option.slug)
+                              handleAddTag(option.slug);
                             }
                           }}
                         >
@@ -167,7 +155,7 @@ export function TagInput({
                           </div>
                           <span>{option.slug}</span>
                         </CommandItem>
-                      )
+                      );
                     })
                   )}
                 </CommandGroup>
@@ -192,10 +180,10 @@ export function TagInput({
       {allowTagCreation && (
         <CreateNewTagDialog
           onRequestClose={() => {
-            setCreateTagDialogOpen(false)
+            setCreateTagDialogOpen(false);
           }}
         />
       )}
     </Dialog>
-  )
+  );
 }
