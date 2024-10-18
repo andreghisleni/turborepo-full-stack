@@ -25,13 +25,9 @@ const registerFormSchema = z
 
 type RegisterFormSchema = z.infer<typeof registerFormSchema>;
 
-export function RegisterForm() {
+export function RegisterForm({ inviteId, email }: { inviteId?: string; email?: string }) {
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const inviteId = searchParams.get('invite');
-  const email = searchParams.get('email');
 
   const inviteExists = Boolean(inviteId && email);
 

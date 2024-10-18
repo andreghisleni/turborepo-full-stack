@@ -3,12 +3,26 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Command } from 'lucide-react';
 import { SignInForm } from './sign-in-form';
+import { z } from 'zod';
 
 export const metadata: Metadata = {
   title: 'Sign In',
 };
+const propsSchema = z.object({
+  searchParams: z.object({
+    callback: z.string().optional(),
+  }),
+});
 
-export default function SignInPage() {
+export default async function SignInPage(props: z.infer<typeof propsSchema>) {
+  const propsSchemaResult = await propsSchema.safeParseAsync(props);
+
+  if (!propsSchemaResult.success) {
+    throw new Error('Invalid props');
+  }
+
+  const { callback } = propsSchemaResult.data.searchParams;
+
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
@@ -19,7 +33,7 @@ export default function SignInPage() {
             Digite seu email e senha para entrar na sua conta
           </p>
         </div>
-        <SignInForm />
+        <SignInForm callback={callback} />
         <p className="px-8 text-center text-sm text-muted-foreground">
           <Link href="/auth/register" className="hover:text-brand underline underline-offset-4">
             Não tem uma conta? Cadastre-se

@@ -18,10 +18,9 @@ const signInFormSchema = z.object({
 
 type SignInFormSchema = z.infer<typeof signInFormSchema>;
 
-export function SignInForm() {
+export function SignInForm({ callback }: { callback?: string }) {
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const {
     register,
@@ -57,10 +56,9 @@ export function SignInForm() {
         description: 'Você foi autenticado com sucesso.',
       });
 
-      const callback = searchParams.get('callback');
-
       if (callback) {
-        router.replace(callback);
+        // router.replace(callback);
+        window.location.href = callback;
         return;
       }
 
