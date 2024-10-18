@@ -1,6 +1,7 @@
-import { CellContext, Column } from '@tanstack/react-table';
+import { CellContext, Column, RowData } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import React, { ReactNode } from 'react';
+import { tableDataParser } from './TableDataParser';
 
 import { Button } from './ui/button';
 
@@ -26,10 +27,17 @@ export const tableDataButton =
   (label: string) =>
   ({ column }: {column: Column<any>}) => <TableDataButton column={column}>{label}</TableDataButton>// eslint-disable-line
 
-export const tdb = (name: string, label: string, cell?: (c: CellContext<any, unknown>) => any) => ({
-  ...{
-    accessorKey: name,
-    header: tableDataButton(label),
-  },
-  ...(cell ? { cell } : {}),
-});
+export function tdb<TData extends RowData>(
+  name: TData extends RowData ? keyof TData : string,
+  label: string,
+  dataType?: 'date-time' | 'date' | 'time',
+  cell?: (c: CellContext<any, unknown>) => any,
+) {
+  return {
+    ...{
+      accessorKey: name,
+      header: tableDataButton(label),
+    },
+    ...(cell ? { cell } : dataType ? { cell: tableDataParser(dataType) } : {}),
+  };
+}
