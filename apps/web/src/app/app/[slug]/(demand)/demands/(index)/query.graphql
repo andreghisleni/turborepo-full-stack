@@ -1,0 +1,49 @@
+
+query GetSaleDemands ($filter: FilterInput!) {
+  saleDemands {
+    id
+    product {
+      id
+      name
+      description
+      code
+      createdAt
+      variations {
+        id
+        value
+        variationType {
+          id
+          name
+          label
+          type
+          createdAt
+        }
+        variationValue {
+          id
+          name
+          createdAt
+        }
+      }
+    }
+    note
+    emittedAt
+    createdAt
+    updatedAt
+  }
+
+  getTotalSaleDemands(filter: $filter)
+}
+
+mutation CreateSaleDemand($input: CreateSaleDemandInput!) {
+  createSaleDemand(input: $input) {
+    id
+    createdAt
+  }
+}
+
+mutation UpdateSaleDemand($input: UpdateSaleDemandInput!) {
+  updateSaleDemand(input: $input) {
+    id
+    createdAt
+  }
+}

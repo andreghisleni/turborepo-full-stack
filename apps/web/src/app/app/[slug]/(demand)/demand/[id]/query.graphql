@@ -1,0 +1,121 @@
+query GetSaleDemand($id: String!) {
+  saleDemand(id: $id) {
+    id
+    product {
+      id
+      name
+      description
+      code
+      createdAt
+      variations {
+        id
+        value
+        variationType {
+          id
+          name
+          label
+          type
+          createdAt
+        }
+        variationValue {
+          id
+          name
+          createdAt
+        }
+      }
+      inventoryItems {
+        quantity
+      }
+    }
+
+    saleItens {
+      id
+      product {
+        id
+        name
+        description
+        code
+        costPrice
+        price
+        pictures
+        createdAt
+        variations {
+          id
+          value
+          variationType {
+            id
+            name
+            label
+            type
+            createdAt
+          }
+          variationValue {
+            id
+            name
+            createdAt
+          }
+        }
+        inventoryItems {
+          quantity
+          inventoryLocation {
+            type
+          }
+        }
+      }
+      quantity
+      price
+      seller {
+        id
+        user {
+          id
+          name
+        }
+      }
+      sale {
+        id
+        code
+        client {
+          id
+          name
+          cpf
+        }
+        notes
+      }
+      addedAt
+      createdAt
+      updatedAt
+    }
+
+    note
+    emittedAt
+    createdAt
+    updatedAt
+  }
+}
+query GetClientsAndSellers {
+  clients {
+    id
+    name
+    cpf
+    shipping
+    sales {
+      id
+      status
+      createdAt
+    }
+  }
+
+  sellers {
+    id
+    user {
+      id
+      name
+    }
+  }
+}
+mutation CreateSaleDemandItem($input: CreateSaleItemInput!) {
+  createSaleItem(input: $input) {
+    id
+    createdAt
+  }
+}
